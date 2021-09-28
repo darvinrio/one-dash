@@ -47,11 +47,15 @@ def make_uni_top5_lp_plot():
 
     p = figure(plot_height=400,x_axis_type='datetime'
                   ,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
-
+    
     for pool in list(uni_top_df['POOL_NAME'].unique()):
         src = uni_top_df[uni_top_df['POOL_NAME']==pool]
-        line = p.line(source=cds(src),x='BLOCK_HOUR',y='TVL_USD',
-                    line_width=2,legend_label=pool,color=color_dict[pool])
+        try:
+            line = p.line(source=cds(src),x='BLOCK_HOUR',y='TVL_USD',
+                        line_width=2,legend_label=pool,color=color_dict[pool])
+        except: 
+            line = p.line(source=cds(src),x='BLOCK_HOUR',y='TVL_USD',
+                        line_width=2,legend_label=pool,color='magenta')
 
 
     crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)

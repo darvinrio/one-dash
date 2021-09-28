@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="p-2">
+    <div class="section">
+        <div class="columns">
+            <div class="column">
+                <a href="{{url_for('uni_stats')}}">
+                    <div class="card">
+                        <div class="card-content">
+                            <img src="/static/img/uniswap-logo.png" alt="">
+                        </div>
+                        <div class="card-header">
+                            <div class="card-header-title">
+                                Uniswap
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="">
+                    <div class="card">
+                        <div class="card-content">
+                            <img src="/static/img/aave-logo.png" alt="">
+                        </div>
+                        <div class="card-header">
+                            <div class="card-header-title">
+                                AAVE
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="column">
+                <a href="">
+                    <div class="card">
+                        <div class="card-content">
+                            <img src="/static/img/polygon-logo.png" alt="">
+                        </div>
+                        <div class="card-header">
+                            <div class="card-header-title">
+                                Polygon
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

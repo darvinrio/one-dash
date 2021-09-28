@@ -1,0 +1,78 @@
+{% extends 'uni_index.html' %}
+
+{% block head %}
+<title>Uniswap stats</title>
+{% endblock %}
+
+
+{% block tab %}
+<section class="section">
+    <div class="container">
+        <p class="title">
+            Uniswap Stats
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                            Total Value Locked
+                    </div>
+                    <div class="card-content">
+                        {{uni_tvl | safe}}
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                            Daily Swap Volume
+                    </div>
+                    <div class="card-content">
+                        {{uni_vol | safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                    Top 5 Pools by Liquidity locked
+            </div>
+            <div class="content">
+                <div class="p-2">
+                    {{uni_top5_lp_plot | safe}}
+                </div>
+                <div class="columns px-4 pb-3">
+                    {% for pool in top5_lp_today%}
+                        <div class="column">
+                            <div class="card">
+                                <div class="card-content">
+                                    {{pool.POOL_NAME}}
+                                </div>
+                                <header class="card-header">
+                                    <p class="title is-3">
+                                        {{pool.TVL_USD}}
+                                    </p>
+                                </header>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+{% endblock %}

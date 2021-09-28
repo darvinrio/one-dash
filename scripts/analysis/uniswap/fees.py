@@ -17,14 +17,14 @@ from bokeh.embed import autoload_static
 from scripts.formatters import format_fee_percent
 from scripts.process_plot import get_div
 
-import socket
-old_getaddrinfo = socket.getaddrinfo
-def new_getaddrinfo(*args, **kwargs):
-    responses = old_getaddrinfo(*args, **kwargs)
-    return [response
-            for response in responses
-            if response[0] == socket.AF_INET]
-socket.getaddrinfo = new_getaddrinfo
+# import socket
+# old_getaddrinfo = socket.getaddrinfo
+# def new_getaddrinfo(*args, **kwargs):
+#     responses = old_getaddrinfo(*args, **kwargs)
+#     return [response
+#             for response in responses
+#             if response[0] == socket.AF_INET]
+# socket.getaddrinfo = new_getaddrinfo
 
 fee_api = 'https://api.flipsidecrypto.com/api/v2/queries/0d08c482-7529-4f8b-a775-659939ff43ed/data/latest'
 uni_volatile_fee_api = 'https://api.flipsidecrypto.com/api/v2/queries/86fa4d41-43bd-4be5-ae99-83877f0ed603/data/latest'

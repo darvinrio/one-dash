@@ -16,14 +16,14 @@ from bokeh.embed import autoload_static
 
 from scripts.process_plot import get_div
 
-import socket
-old_getaddrinfo = socket.getaddrinfo
-def new_getaddrinfo(*args, **kwargs):
-    responses = old_getaddrinfo(*args, **kwargs)
-    return [response
-            for response in responses
-            if response[0] == socket.AF_INET]
-socket.getaddrinfo = new_getaddrinfo
+# import socket
+# old_getaddrinfo = socket.getaddrinfo
+# def new_getaddrinfo(*args, **kwargs):
+#     responses = old_getaddrinfo(*args, **kwargs)
+#     return [response
+#             for response in responses
+#             if response[0] == socket.AF_INET]
+# socket.getaddrinfo = new_getaddrinfo
 
 un_un_api ='https://api.flipsidecrypto.com/api/v2/queries/2c950742-5b6e-4e90-b988-042787544a86/data/latest'
 st_un_api = 'https://api.flipsidecrypto.com/api/v2/queries/5145287b-0387-4a16-a04e-6f70f62d7def/data/latest'

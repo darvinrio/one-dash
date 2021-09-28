@@ -16,16 +16,6 @@ from scripts.formatters import format_money
 from scripts.process_plot import get_div
 
 
-# import socket
-# old_getaddrinfo = socket.getaddrinfo
-# def new_getaddrinfo(*args, **kwargs):
-#     responses = old_getaddrinfo(*args, **kwargs)
-#     return [response
-#             for response in responses
-#             if response[0] == socket.AF_INET]
-# socket.getaddrinfo = new_getaddrinfo
-
-
 def get_uni_tvl():
     api = 'https://api.flipsidecrypto.com/api/v2/queries/5af7a9cb-8df7-42db-9691-ba5574f9401b/data/latest'
     

@@ -1,53 +1,55 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="p-2">
-    <div class="section">
-        <div class="columns">
-            <div class="column">
-                <a href="{{url_for('uni_stats')}}">
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="/static/img/uniswap-logo.png" alt="">
-                        </div>
-                        <div class="card-header">
-                            <div class="card-header-title">
-                                Uniswap
-                            </div>
+
+<div class="container">
+    <div class="row p-4">
+        <div class="col">
+            <a href="{{url_for('uni_stats')}}">
+                <div class="card">
+                    <div class="card-content">
+                        <img src="/static/img/uniswap-logo.png" class="img-fluid p-4" alt="">
+                    </div>
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            Uniswap
                         </div>
                     </div>
-                </a>
-            </div>
-            <div class="column">
-                <a href="">
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="/static/img/aave-logo.png" alt="">
-                        </div>
-                        <div class="card-header">
-                            <div class="card-header-title">
-                                AAVE
-                            </div>
+                </div>
+            </a>
+        </div>
+        {#
+        <div class="col">
+            <a href="">
+                <div class="card">
+                    <div class="card-content">
+                        <img src="/static/img/aave-logo.png" class="img-fluid p-4" alt="">
+                    </div>
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            AAVE
                         </div>
                     </div>
-                </a>
-            </div>
-            <div class="column">
-                <a href="">
-                    <div class="card">
-                        <div class="card-content">
-                            <img src="/static/img/polygon-logo.png" alt="">
-                        </div>
-                        <div class="card-header">
-                            <div class="card-header-title">
-                                Polygon
-                            </div>
+                </div>
+            </a>
+        </div>
+    #}
+        <div class="col">
+            <a href="">
+                <div class="card">
+                    <div class="card-content">
+                        <img src="/static/img/polygon-logo.png" class="img-fluid p-4" alt="">
+                    </div>
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            Polygon
                         </div>
                     </div>
-                </a>
-            </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
+
 
 {% endblock %}

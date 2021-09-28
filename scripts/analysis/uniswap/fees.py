@@ -17,14 +17,6 @@ from bokeh.embed import autoload_static
 from scripts.formatters import format_fee_percent
 from scripts.process_plot import get_div
 
-# import socket
-# old_getaddrinfo = socket.getaddrinfo
-# def new_getaddrinfo(*args, **kwargs):
-#     responses = old_getaddrinfo(*args, **kwargs)
-#     return [response
-#             for response in responses
-#             if response[0] == socket.AF_INET]
-# socket.getaddrinfo = new_getaddrinfo
 
 fee_api = 'https://api.flipsidecrypto.com/api/v2/queries/0d08c482-7529-4f8b-a775-659939ff43ed/data/latest'
 uni_volatile_fee_api = 'https://api.flipsidecrypto.com/api/v2/queries/86fa4d41-43bd-4be5-ae99-83877f0ed603/data/latest'
@@ -49,7 +41,7 @@ def get_uni_fee(api):
 def get_uni_fee_plot():
     uni_fee_df = get_uni_fee(fee_api).sort_values(['DATE'])
 
-    p = figure(x_axis_type='datetime',y_axis_type='log',plot_height=300,y_axis_label='Fee Generated'
+    p = figure(x_axis_type='datetime',y_axis_type='log',plot_height=200,y_axis_label='Fee Generated'
                   ,sizing_mode="scale_width",tools='xwheel_zoom,ywheel_zoom,reset')
 
     for fee in list(uni_fee_df['FEE_PERCENT'].unique()):
@@ -61,7 +53,7 @@ def get_uni_fee_plot():
     hover = HoverTool(tooltips = [('Date', '@DATE{%F}'),
                                 ('Fees Accumulated', '@FEES_COLLECTED{($ 0.00 a)}'),
                                 ],
-                        formatters={'@DATE': 'datetime'},mode='vline',point_policy="follow_mouse")
+                        formatters={'@DATE': 'datetime'},point_policy="follow_mouse")
 
     hover.show_arrow = False
     p.add_tools(hover,crosshair)
@@ -76,7 +68,7 @@ def get_uni_fee_plot():
 def get_uni_volat_plot():
     uni_volatile_fee_df = get_uni_fee(uni_volatile_fee_api).sort_values(['DATE'])
 
-    p = figure(x_axis_type='datetime',y_axis_type='log',plot_height=400,y_axis_label='Median APR'
+    p = figure(x_axis_type='datetime',y_axis_type='log',plot_height=300,y_axis_label='Median APR'
                   ,sizing_mode="scale_width",tools='xwheel_zoom,ywheel_zoom,reset')
 
     for fee in list(uni_volatile_fee_df['FEE_PERCENT'].unique()):
@@ -88,7 +80,7 @@ def get_uni_volat_plot():
     hover = HoverTool(tooltips = [('Date', '@DATE{%F}'),
                                 ('Median APR', '@MED_APR %'),
                                 ],
-                        formatters={'@DATE': 'datetime'},mode='vline',point_policy="follow_mouse")
+                        formatters={'@DATE': 'datetime'},point_policy="follow_mouse")
 
     hover.show_arrow = False
     p.add_tools(hover,crosshair)
@@ -102,7 +94,7 @@ def get_uni_volat_plot():
 def get_uni_nice_plot():
     uni_nice_fee_df = get_uni_fee(uni_nice_fee_api).sort_values(['DATE'])
 
-    p = figure(x_axis_type='datetime',y_axis_type='log',plot_height=400,y_axis_label='Median APR'
+    p = figure(x_axis_type='datetime',y_axis_type='log',plot_height=300,y_axis_label='Median APR'
                   ,sizing_mode="scale_width",tools='xwheel_zoom,ywheel_zoom,reset')
 
     for fee in list(uni_nice_fee_df['FEE_PERCENT'].unique()):
@@ -114,7 +106,7 @@ def get_uni_nice_plot():
     hover = HoverTool(tooltips = [('Date', '@DATE{%F}'),
                                 ('Median APR', '@MED_APR %'),
                                 ],
-                        formatters={'@DATE': 'datetime'},mode='vline',point_policy="follow_mouse")
+                        formatters={'@DATE': 'datetime'},point_policy="follow_mouse")
 
     hover.show_arrow = False
     p.add_tools(hover,crosshair)

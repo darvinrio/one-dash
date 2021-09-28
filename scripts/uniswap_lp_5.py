@@ -15,14 +15,6 @@ from bokeh.models import NumeralTickFormatter, CustomJS
 from scripts.formatters import format_money
 from scripts.process_plot import get_div
 
-# import socket
-# old_getaddrinfo = socket.getaddrinfo
-# def new_getaddrinfo(*args, **kwargs):
-#     responses = old_getaddrinfo(*args, **kwargs)
-#     return [response
-#             for response in responses
-#             if response[0] == socket.AF_INET]
-# socket.getaddrinfo = new_getaddrinfo
 
 color_dict={
     'WETH-USDT 3000 60':'#259c77',
@@ -39,7 +31,7 @@ def get_uni_top5():
     print('Retrieved data')
     df = pd.DataFrame(response.json())
     df['BLOCK_HOUR'] = pd.to_datetime(df['BLOCK_HOUR']).dt.tz_localize(None)
-    return df
+    return df[df['TVL_USD']<1000000000]
 
 def make_uni_top5_lp_plot():
     global uni_top_df

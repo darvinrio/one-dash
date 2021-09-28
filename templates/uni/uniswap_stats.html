@@ -6,73 +6,160 @@
 
 
 {% block tab %}
-<section class="section">
-    <div class="container">
-        <p class="title">
-            Uniswap Stats
-        </p>
-    </div>
-</section>
+<div class="container py-4">
+    <p class="title">
+        Uniswap Stats
+    </p>
+</div>
 
-<section class="section">
-    <div class="container">
-        <div class="columns">
-            <div class="column">
-                <div class="card">
-                    <div class="card-header">
-                            Total Value Locked
-                    </div>
-                    <div class="card-content">
-                        {{uni_tvl | safe}}
-                    </div>
+<div class="container py-4">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Total Value Locked
+                </div>
+                <div class="card-body">
+                    {{uni_tvl | safe}}
                 </div>
             </div>
-            <div class="column">
-                <div class="card">
-                    <div class="card-header">
-                            Daily Swap Volume
-                    </div>
-                    <div class="card-content">
-                        {{uni_vol | safe}}
-                    </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Daily Swap Volume
+                </div>
+                <div class="card-body">
+                    {{uni_vol | safe}}
                 </div>
             </div>
         </div>
     </div>
-</section>
-<section class="section">
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                    Top 5 Pools by Liquidity locked
+</div>
+
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            Top 5 Pools by Liquidity locked
+        </div>
+        <div class="content">
+            <div class="p-2">
+                {{uni_top5_lp_plot | safe}}
             </div>
-            <div class="content">
-                <div class="p-2">
-                    {{uni_top5_lp_plot | safe}}
-                </div>
-                <div class="columns px-4 pb-3">
-                    {% for pool in top5_lp_today%}
-                        <div class="column">
-                            <div class="card">
-                                <div class="card-content">
-                                    {{pool.POOL_NAME}}
-                                </div>
-                                <header class="card-header">
-                                    <p class="title is-3">
-                                        {{pool.TVL_USD}}
-                                    </p>
-                                </header>
-                            </div>
+            <div class="row px-4 pb-3">
+                {% for pool in top5_lp_today%}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <figcaption class="figure-caption text-end">{{pool.POOL_NAME}}</figcaption>
                         </div>
-                    {% endfor %}
+                        <header class="card-body">
+                            <h3>
+                                {{pool.TVL_USD}}
+                            </h3>
+                        </header>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            Daily Fees Generated per Fee Tier
+        </div>
+        <div class="card-body">
+            {{uni_fee_plot|safe}}
+
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            Daily Median APR per Fee Tier
+        </div>
+        <div class="card-body">
+            <div class="row p-2">
+                <div class="col text-center">
+                    {{uni_volat_plot|safe}}
+                    <figcaption class="figure-caption text-end">APR of pools with &le; $10M</figcaption>
+                </div>
+                <div class="col has text-center">
+                    {{uni_nice_plot|safe}}
+                    <figcaption class="figure-caption text-end">APR of pools with &ge; $10M</figcaption>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-</section>
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            Daily LP and Liquidity activity
+            <div class="p-4" style="position: absolute; right: 0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="bi bi-info-circle"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col">
+                    {{lp_layout|safe}}
+                    <figcaption class="figure-caption text-end">Liquidity Providers activity</figcaption>
+                </div>
+                <div class="col">
+                    {{liq_layout|safe}}
+                    <figcaption class="figure-caption text-end">Liquidity's activity</figcaption>
+                </div>
+            </div>
+            <nav class="row">
+                <div class="col text-center text-white" style="background-color: #f4b731;">floated into range</div>
+                <div class="col text-center text-white" style="background-color: #0c3694;">out of range</div>
+                <div class="col text-center text-white" style="background-color: #4bdb4b;">updated range</div>
+                <div class="col text-center text-white" style="background-color: #ff0079;">reduced exposure</div>
+                <div class="col text-center text-white" style="background-color:black;">other</div>
+            </nav>
+        </div>
+    </div>
+</div>
 
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            ETH ranges vs LP ranges
+        </div>
+        <div class="card-body">
+            {{uni_lp_plot|safe}}
+        </div>
+    </div>
+</div>
 
+{#Modals#}
 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

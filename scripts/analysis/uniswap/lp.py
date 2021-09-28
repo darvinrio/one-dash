@@ -16,14 +16,6 @@ from bokeh.embed import autoload_static
 
 from scripts.process_plot import get_div
 
-# import socket
-# old_getaddrinfo = socket.getaddrinfo
-# def new_getaddrinfo(*args, **kwargs):
-#     responses = old_getaddrinfo(*args, **kwargs)
-#     return [response
-#             for response in responses
-#             if response[0] == socket.AF_INET]
-# socket.getaddrinfo = new_getaddrinfo
 
 def get_lp_pos():
     api = 'https://api.flipsidecrypto.com/api/v2/queries/a082884b-0efc-4ae9-a8ba-ad36f9526371/data/latest'
@@ -48,7 +40,7 @@ def make_uni_lp_plot():
     lp_pct_df = get_lp_pos_pct()
 
     # main plot
-    p = figure(x_axis_type='datetime',plot_height=450,y_axis_label='Price'
+    p = figure(x_axis_type='datetime',plot_height=400,y_axis_label='Price'
                   ,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,reset')
     src = cds(lp_df)
 
@@ -64,7 +56,7 @@ def make_uni_lp_plot():
     p.xaxis.visible=False
 
     #sub plot
-    p2 = figure(x_axis_type='datetime',plot_height=300,y_axis_label='Percent'
+    p2 = figure(x_axis_type='datetime',plot_height=200,y_axis_label='Percent'
                   ,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,reset')
     src2 = cds(lp_pct_df)
 

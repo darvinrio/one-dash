@@ -10,14 +10,14 @@ for name in files:
     a_file.truncate()
     a_file.close()
 
-# import socket
-# old_getaddrinfo = socket.getaddrinfo
-# def new_getaddrinfo(*args, **kwargs):
-#     responses = old_getaddrinfo(*args, **kwargs)
-#     return [response
-#             for response in responses
-#             if response[0] == socket.AF_INET]
-# socket.getaddrinfo = new_getaddrinfo
+import socket
+old_getaddrinfo = socket.getaddrinfo
+def new_getaddrinfo(*args, **kwargs):
+    responses = old_getaddrinfo(*args, **kwargs)
+    return [response
+            for response in responses
+            if response[0] == socket.AF_INET]
+socket.getaddrinfo = new_getaddrinfo
 
 from scripts.uniswap_tvl_vol import get_uni_stat_plot
 from scripts.analysis.uniswap.fees import get_uni_fee_plots
@@ -36,26 +36,36 @@ def home():
 def uni_stats():
     uni_tvl,uni_vol = get_uni_stat_plot()
     uni_top5_lp_plot,top5_lp_today = get_uni_top5_lp_plot()
+
+    uni_fee_plot, uni_volat_plot, uni_nice_plot = get_uni_fee_plots()
+    uni_lp_plot = get_uni_lp_plot()
+    lp_layout,liq_layout = get_lp_react_plots()
     
     return render_template('uni/uniswap_stats.html',
         uni_tvl= uni_tvl,
         uni_vol=uni_vol,
         uni_top5_lp_plot=uni_top5_lp_plot,
-        top5_lp_today=top5_lp_today)
-
-@app.route('/uni_analytics')
-def uni_analytics():
-    uni_fee_plot, uni_volat_plot, uni_nice_plot = get_uni_fee_plots()
-    uni_lp_plot = get_uni_lp_plot()
-    lp_layout,liq_layout = get_lp_react_plots()
-
-    return render_template('uni/uniswap_analysis.html',
+        top5_lp_today=top5_lp_today,
         uni_fee_plot=uni_fee_plot, 
         uni_volat_plot=uni_volat_plot, 
         uni_nice_plot=uni_nice_plot,
         uni_lp_plot=uni_lp_plot,
         lp_layout=lp_layout,
         liq_layout=liq_layout)
+
+# @app.route('/uni_analytics')
+# def uni_analytics():
+#     uni_fee_plot, uni_volat_plot, uni_nice_plot = get_uni_fee_plots()
+#     uni_lp_plot = get_uni_lp_plot()
+#     lp_layout,liq_layout = get_lp_react_plots()
+
+#     return render_template('uni/uniswap_analysis.html',
+#         uni_fee_plot=uni_fee_plot, 
+#         uni_volat_plot=uni_volat_plot, 
+#         uni_nice_plot=uni_nice_plot,
+#         uni_lp_plot=uni_lp_plot,
+#         lp_layout=lp_layout,
+#         liq_layout=liq_layout)
 
 # @app.route('/uni_fees')
 # def uni_fees():

@@ -72,7 +72,7 @@ def make_lp_react_plots():
             label=list(d.keys())
             p = figure(title=out_dict[key]['label'],x_range=d['index'],plot_height=175,x_axis_type='datetime'
                         ,x_axis_label='Time'
-                        ,sizing_mode="stretch_width",tools='xwheel_zoom,reset')
+                        ,sizing_mode="stretch_width",tools='xwheel_zoom,xpan,reset')
 
             crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)
             tooltips = [('Date', '@index'),('Action', '$name'),
@@ -82,7 +82,7 @@ def make_lp_react_plots():
             p.yaxis.formatter=NumeralTickFormatter(format="00.00%")
             # p.xaxis.formatter=DatetimeTickFormatter()
 
-            p.vbar_stack(label, x='index',color=color_dict,source=d)
+            p.vbar_stack(label, x='index',color=color_dict,source=d,fill_alpha=0.7,hover_alpha=1)
             p.xaxis.visible=False
             p.grid.visible=False
             if move == 'PCT_MIN_LIQUIDITY_ADJUSTED_AVG':

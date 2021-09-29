@@ -107,26 +107,23 @@
 
 <section class="section container">
     <div class="card">
-        <h1 class="title is_size-3 pl-2">
+        <h3 class="pl-2">
             Reacting to out of bound ranges like a pro LP ... 
-        </h1>
-        <!-- <div class="content px-4 has-text-justified">
-            <h1 class="is-size-6">
-            </h1>
-        </div>   -->
+        </h3>
+
         
-        <div class="columns has-text-centered">
-            <div class="column">
+        <div class="row">
+            <div class="col">
                 {{lp_layout|safe}} 
-                <h1 class="subtitle is-size-7">
+                <h6 class="subtitle is-size-7">
                     Liquidity Providers activity
-                </h1> 
+                </h6> 
             </div>
-            <div class="column">
+            <div class="col">
                 {{liq_layout|safe}}
-                <h1 class="subtitle is-size-7">
+                <h6 class="subtitle is-size-7">
                     Liquidity's activity
-                </h1>
+                </h6>
             </div>
         </div>
         <nav class="level is-size-7">
@@ -137,8 +134,8 @@
             <div class="level-item has-text-centered has-text-white" style="background-color:black;">other</div>
         </nav>
         
-        <div class="content p-2 has-text-justified">
-            <h1 class="is-size-6">
+        <div class="content p-2 text-justified">
+            <p class="">
                 Andruu took a look at how LPs and the Liquidity react to market conditions. 
                 In order to read these plots, use the legends above. The legend describes activity that occur to a liquidity position. For example, say floated into range, in the graph on the left this means, the LP moved the ranges manually, where as in the graph on right it means, the liquidity moved back into range, and so on.
                 <ul>
@@ -147,7 +144,7 @@
                     <li>Life as a provider to Stable-Stable pair is peaceful. Thought there were out of bounds ranges during volatile times, at the end of the day, majority of these return back to range on their own, since they have to keep their peg.</li>
                 </ul>
                 <a href="https://app.flipsidecrypto.com/dashboard/active-liquidity-for-5-largest-pools-in-uniswap-v3-FjX31D" target="_blank">read full analysis...</a>
-            </h1>
+            </p>
         </div>
     </div>
 </section>

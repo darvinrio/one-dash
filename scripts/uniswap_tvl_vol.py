@@ -44,7 +44,7 @@ def get_uni_vol():
 def get_uni_tvl_plot():
     uni_tvl_df = get_uni_tvl()
 
-    p = figure(x_axis_type='datetime',plot_height=300,x_axis_label='Time',y_axis_label='TVL_USD',sizing_mode="scale_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p = figure(x_axis_type='datetime',plot_height=300,x_axis_label='Time',y_axis_label='TVL_USD',sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
     line = p.line(source=cds(uni_tvl_df),x='BLOCK_HOUR',y='TOTAL_LIQUIDITY_USD',line_color='#fc077d',line_width=2)
 
 
@@ -71,7 +71,7 @@ def get_uni_tvl_plot():
 
     hover.show_arrow = False
     p.outline_line_color = None
-    p.axis.visible = False
+    p.yaxis.visible = False
     p.grid.visible = False
     p.add_tools(hover,crosshair)
 
@@ -81,7 +81,7 @@ def get_uni_tvl_plot():
 def get_uni_vol_plot():
     uni_vol_df = get_uni_vol()
     
-    p = figure(x_range= uni_vol_df['DATE_STR'],x_axis_label='Time',y_axis_label='TVL_USD',plot_height=300,sizing_mode="scale_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p = figure(x_range= uni_vol_df['DATE_STR'],x_axis_type='datetime',x_axis_label='Time',y_axis_label='TVL_USD',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
     line = p.vbar(source=cds(uni_vol_df),x='DATE_STR',top='DAILY_USD_VOLUME',width=0.7, fill_color='#fc077d',line_color='#fc077d')
 
 
@@ -111,7 +111,7 @@ def get_uni_vol_plot():
     hover.line_policy="next"
     p.add_tools(hover,crosshair)
     p.outline_line_color = None
-    p.axis.visible = False
+    p.yaxis.visible = False
     p.grid.visible = False
 
     return get_div(p)

@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{pool_address}}</title>
+<style>
+    .bk-tooltip {
+        border: 0px !important;
+        width: 150px !important;
+    }
+</style>
+{% endblock %}
+
+{#
+
+0 GROSS_RESERVES_TOKEN0_ADJUSTED -
+1 GROSS_RESERVES_TOKEN1_ADJUSTED -
+2 PRICE01 -
+3 PRICE10 -
+4 SWAP_COUNT -
+5 SWAP_VOL -
+6 TOKEN0_IN
+7 TOKEN0_OUT
+8 TOKEN1_IN
+9 TOKEN1_OUT
+10 TVL_USD -
+
+#}
+
+{% block body %}
+
+<div class="container">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css'
+        rel='stylesheet' type='text/css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js'
+        type='text/javascript'></script>
+
+
+    {#<div class="input-group input-daterange">
+        <form action="/uni_pool/{{pool_address}}" method="post">
+
+            <input type="text" class="form-control" value="05 May,2021" style='width: 300px;' name="start_date"
+                id="start_date">
+            <div class="input-group-addon">to</div>
+            <input type="text" class="form-control" value="today" style='width: 300px;' name="end_date" id="end_date">
+            <input type="submit" value="set">
+
+        </form>
+    </div>#}
+
+    <div class="form-outline">
+        <form action="/uni_pool/{{pool_address}}" method="POST">
+            <div class="input-group input-daterange">
+
+                <input type="text" class="form-control" value="05 May,2021"  name="start_date"
+                    id="start_date">
+                <div class="input-group-addon">to</div>
+                <input type="text" class="form-control" value="today" style='width: 100px;' name="end_date"
+                    id="end_date">
+                <button class="btn btn-light" type="submit" value="set">Set</button>
+
+            </div>
+        </form>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $(' .input-daterange').datepicker({
+            format: "dd M, yyyy",
+            startDate: "05 May, 2021",
+            endDate: "today",
+            todayBtn: true,
+            clearBtn: true,
+            autoclose: true
+        });
+    </script>
+
+</div>
+
+<div class="p-5">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h1 class="display-5">
+                        {{pool_address}}
+                    </h1>
+                </div>
+                <div id="24hr_stats" class="col">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Total Value Locked
+                                </div>
+                                <div class="card-body">
+                                    <h4>
+                                        {{param_list[10].div|safe}}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Swap Volume
+                                </div>
+                                <div class="card-body">
+                                    <h4>
+                                        {{param_list[5].div|safe}}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Swaps made
+                                </div>
+                                <div class="card-body">
+                                    <h4>
+                                        {{param_list[4].div|safe}}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-5">
+    <div class="row">
+        <div class="col">
+            <div id="TVL_USD" class="card">
+                <div class="card-header">
+                    Total Value Locked
+                </div>
+                <div class="card-body">
+                    {{param_list[10].plot|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="TVL_USD" class="card">
+                <div class="card-header">
+                    Swap Volume
+                </div>
+                <div class="card-body">
+                    {{param_list[5].plot|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="TVL_USD" class="card">
+                <div class="card-header">
+                    Swaps Made
+                </div>
+                <div class="card-body">
+                    {{param_list[4].plot|safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="p-5">
+    <div class="row">
+        <div class="col">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[0].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[0].plot|safe}}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[1].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[1].plot|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[2].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[2].plot|safe}}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[3].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[3].plot|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-5">
+    <div class="row">
+        <div class="col">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[6].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[6].plot|safe}}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[7].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[7].plot|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[8].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[8].plot|safe}}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        {{param_list[9].func|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{param_list[9].plot|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% for func in param_list%}
+{{func.script|safe}}
+{% endfor %}
+
+{% endblock %}

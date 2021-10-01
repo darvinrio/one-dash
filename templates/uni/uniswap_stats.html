@@ -1,11 +1,11 @@
-{% extends 'uni_index.html' %}
+{% extends 'base.html' %}
 
 {% block head %}
 <title>Uniswap stats</title>
 {% endblock %}
 
 
-{% block tab %}
+{% block body %}
 <div class="container py-2 py-4">
     <p class="title">
         Uniswap Stats
@@ -40,30 +40,45 @@
 <div class="container py-2">
     <div class="card">
         <div class="card-header">
-            Top 5 Pools by Liquidity locked
+            Top 10 Pools by Liquidity locked
         </div>
-        <div class="content">
-            <div class="p-2">
-                {{uni_top5_lp_plot | safe}}
-            </div>
-            <div class="row px-4 pb-3">
-                {% for pool in top5_lp_today%}
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">
-                            <figcaption class="figure-caption text-end">{{pool.POOL_NAME}}</figcaption>
-                        </div>
-                        <header class="card-body">
-                            <h3>
-                                {{pool.TVL_USD}}
-                            </h3>
-                        </header>
-                    </div>
-                </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead style="background-color:#fc077d; color: white;">
+                    <tr>
+                        <th>Pool</th>
+                        <th></th>
+                        <th>Tokens</th>
+                        <th></th>
+                        <th>Total Value Locked</th>
+                    </tr>
+                </thead>
+                {% for pool in uni_top_pool_json%}
+
+                <tr>
+                    <td>
+                        <a href="{{url_for('pool',pool_address=pool.POOL_ADDRESS)}}">
+                            {{pool.POOL_NAME}}
+                        </a>
+                    </td>
+                    <td>
+                        <img src="{{url_for('static',filename=pool.TOKEN0_ICON)}}" width="20">
+                        <img src="{{url_for('static',filename=pool.TOKEN1_ICON)}}" width="20">
+
+                    </td>
+                    <td>
+                        {{pool.TOKEN0_SYMBOL}}
+                    </td>
+                    <td>
+                        {{pool.TOKEN1_SYMBOL}}
+                    </td>
+                    <td>{{pool.TOTAL_BAL}}</td>
+                </tr>
                 {% endfor %}
-            </div>
+            </table>
         </div>
     </div>
+</div>
 </div>
 
 <div class="container py-2">
@@ -272,16 +287,25 @@
 
                 <div class="content p-2 has-text-justified">
                     <p class="is-size-6">
-                        Kida#8864 analysed the popular ETH-USDC pool's top Liquidity Providers to see how efficient they are , and lessons to be learnt from them. 
-                        In the graph on the right, in top you can see the ETH's price range as line segments, while the LP's liquidity range as shaded area.In bottom, you can see the volatility compared to the percentage range of LP position. Ideally, we want both the black regions to be completely and tightly engulfed by the red areas for maximum capital efficiency.
-                        <ul>
-                            <li>The LPs consistently managed to enclose all of the ETH price for majority of the days. Only days of extreme volatility pushed these LPs out of position. </li>
-                            <li>This means, generally the LPs are either very good at prediciting the price range of ETH or very reactive to changes, both of which are rewarding in Uniswapv3</li>
-                            <li>A position gap of greater than 5% is required, or else transactions will go out of bounds</li>
-                            <li>A 25% price gap looks like overkill on most days.</li>
-                            <li>15% to 30% price gap with previous day average ETH price at center, is the analyst's recommendation for LP ranges.</li>
-                        </ul>
-                        <a href="https://app.flipsidecrypto.com/dashboard/uniswap-active-positions-and-their-price-ranges-UjLwpy" target="_blank">read full analysis...</a>
+                        Kida#8864 analysed the popular ETH-USDC pool's top Liquidity Providers to see how efficient they
+                        are , and lessons to be learnt from them.
+                        In the graph on the right, in top you can see the ETH's price range as line segments, while the
+                        LP's liquidity range as shaded area.In bottom, you can see the volatility compared to the
+                        percentage range of LP position. Ideally, we want both the black regions to be completely and
+                        tightly engulfed by the red areas for maximum capital efficiency.
+                    <ul>
+                        <li>The LPs consistently managed to enclose all of the ETH price for majority of the days. Only
+                            days of extreme volatility pushed these LPs out of position. </li>
+                        <li>This means, generally the LPs are either very good at prediciting the price range of ETH or
+                            very reactive to changes, both of which are rewarding in Uniswapv3</li>
+                        <li>A position gap of greater than 5% is required, or else transactions will go out of bounds
+                        </li>
+                        <li>A 25% price gap looks like overkill on most days.</li>
+                        <li>15% to 30% price gap with previous day average ETH price at center, is the analyst's
+                            recommendation for LP ranges.</li>
+                    </ul>
+                    <a href="https://app.flipsidecrypto.com/dashboard/uniswap-active-positions-and-their-price-ranges-UjLwpy"
+                        target="_blank">read full analysis...</a>
 
                     </p>
                 </div>

@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import requests
 from datetime import datetime as dt
+from datetime import timedelta
+
 
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource as cds
@@ -81,8 +83,8 @@ def get_uni_tvl_plot():
 def get_uni_vol_plot():
     uni_vol_df = get_uni_vol()
     
-    p = figure(x_range= uni_vol_df['DATE_STR'],x_axis_type='datetime',x_axis_label='Time',y_axis_label='TVL_USD',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
-    line = p.vbar(source=cds(uni_vol_df),x='DATE_STR',top='DAILY_USD_VOLUME',width=0.7, fill_color='#fc077d',line_color='#fc077d')
+    p = figure(x_axis_type='datetime',x_axis_label='Time',y_axis_label='TVL_USD',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    line = p.vbar(source=cds(uni_vol_df),x='DATE',top='DAILY_USD_VOLUME',width=timedelta(days=0.7), fill_color='#fc077d',line_color='#fc077d')
 
 
     crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)

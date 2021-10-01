@@ -11,14 +11,14 @@ for name in files:
     a_file.truncate()
     a_file.close()
 
-import socket
-old_getaddrinfo = socket.getaddrinfo
-def new_getaddrinfo(*args, **kwargs):
-    responses = old_getaddrinfo(*args, **kwargs)
-    return [response
-            for response in responses
-            if response[0] == socket.AF_INET]
-socket.getaddrinfo = new_getaddrinfo
+# import socket
+# old_getaddrinfo = socket.getaddrinfo
+# def new_getaddrinfo(*args, **kwargs):
+#     responses = old_getaddrinfo(*args, **kwargs)
+#     return [response
+#             for response in responses
+#             if response[0] == socket.AF_INET]
+# socket.getaddrinfo = new_getaddrinfo
 
 from scripts.uniswap_tvl_vol import get_uni_stat_plot
 from scripts.uniswap.fees import get_uni_fee_plots
@@ -27,7 +27,7 @@ from scripts.uniswap.lp_react import get_lp_react_plots
 
 from scripts.pool import get_page,get_front
 
-from scripts.test2 import get_comps
+# from scripts.test2 import get_comps
 
 app = Flask(__name__)
 

@@ -42,8 +42,11 @@ uni_pool_df = get_uni_pool()
 uni_top_pool_json, uni_top_pool_df = get_top_pools()
 
 def get_page(pool_address,
-    start_date=np.datetime64(pd.to_datetime(dt.strptime("2021-05-05", "%Y-%m-%d"))),
-    end_date=np.datetime64(pd.to_datetime(date.today()))):
+    start_date=dt.strptime("2021-05-05", "%Y-%m-%d"),
+    end_date=date.today()):
+
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
 
     global uni_pool_df
     global uni_top_pool_df

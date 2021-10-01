@@ -65,9 +65,9 @@ def pool(pool_address):
     if request.method == 'POST':
         start_date = request.form['start_date']
         end_date = request.form['end_date']
-        start_date = datetime.strptime(start_date, "%d %B, %Y")
+        start_date = datetime.strptime(start_date, "%d %b, %Y")
         try: 
-            end_date = datetime.strptime(end_date, "%d %B, %Y")
+            end_date = datetime.strptime(end_date, "%d %b, %Y")
         except:
             end_date = today
         param_list = get_page(pool_address,start_date=start_date,end_date=end_date)

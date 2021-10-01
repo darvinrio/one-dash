@@ -37,33 +37,26 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js'
         type='text/javascript'></script>
 
-
-    {#<div class="input-group input-daterange">
-        <form action="/uni_pool/{{pool_address}}" method="post">
-
-            <input type="text" class="form-control" value="05 May,2021" style='width: 300px;' name="start_date"
-                id="start_date">
-            <div class="input-group-addon">to</div>
-            <input type="text" class="form-control" value="today" style='width: 300px;' name="end_date" id="end_date">
-            <input type="submit" value="set">
-
-        </form>
-    </div>#}
-
-    <div class="form-outline">
-        <form action="/uni_pool/{{pool_address}}" method="POST">
-            <div class="input-group input-daterange">
-
-                <input type="text" class="form-control" value="05 May,2021"  name="start_date"
-                    id="start_date">
-                <div class="input-group-addon">to</div>
-                <input type="text" class="form-control" value="today" style='width: 100px;' name="end_date"
-                    id="end_date">
-                <button class="btn btn-light" type="submit" value="set">Set</button>
-
+    <div class="row">
+        <div class="col">Pick your date</div>
+        <div class="col">
+            <div class="form-outline">
+                <form action="/uni_pool/{{pool_address}}" method="POST">
+                    <div class="input-group input-daterange">
+        
+                        <input type="text" class="form-control" value="05 May,2021"  name="start_date"
+                            id="start_date">
+                        <div class="input-group-addon">to</div>
+                        <input type="text" class="form-control" value="today" style='width: 100px;' name="end_date"
+                            id="end_date">
+                        <button class="btn btn-light" type="submit" value="set">Set</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
+
+    
 
 
 

@@ -3,3 +3,7 @@
     width: 200px !important;
     }
 
+.card-header{
+    color: white !important;
+    background-color: #fc077d !important; 
+}

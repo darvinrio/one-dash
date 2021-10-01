@@ -11,21 +11,21 @@ for name in files:
     a_file.truncate()
     a_file.close()
 
-# import socket
-# old_getaddrinfo = socket.getaddrinfo
-# def new_getaddrinfo(*args, **kwargs):
-#     responses = old_getaddrinfo(*args, **kwargs)
-#     return [response
-#             for response in responses
-#             if response[0] == socket.AF_INET]
-# socket.getaddrinfo = new_getaddrinfo
+import socket
+old_getaddrinfo = socket.getaddrinfo
+def new_getaddrinfo(*args, **kwargs):
+    responses = old_getaddrinfo(*args, **kwargs)
+    return [response
+            for response in responses
+            if response[0] == socket.AF_INET]
+socket.getaddrinfo = new_getaddrinfo
 
 from scripts.uniswap_tvl_vol import get_uni_stat_plot
 from scripts.uniswap.fees import get_uni_fee_plots
 from scripts.uniswap.lp import get_uni_lp_plot
 from scripts.uniswap.lp_react import get_lp_react_plots
 
-from scripts.pool import get_page,get_front
+from scripts.pool import get_page,get_front,get_page_stuff
 
 # from scripts.test2 import get_comps
 
@@ -61,6 +61,9 @@ def uni_stats():
 def pool(pool_address):
 
     today = date.today()
+    end_date = today.strftime("%d %b, %y")
+    start_date = datetime(2021,5,5).strftime("%d %b, %y")
+
     if request.method == 'POST':
         start_date = request.form['start_date']
         end_date = request.form['end_date']
@@ -71,13 +74,19 @@ def pool(pool_address):
             end_date = today
         param_list = get_page(pool_address,start_date=start_date,end_date=end_date)
         
+        end_date = end_date.strftime("%d %b, %y")
+        start_date = start_date.strftime("%d %b, %y")
+
     else:
         param_list = get_page(pool_address)
         
+    param_dict = get_page_stuff(pool_address)    
     return render_template('uni/pool.html',
-            today=today,
+            end_date=end_date,
+            start_date=start_date,
             pool_address = pool_address, 
-            param_list=param_list)
+            param_list=param_list,
+            param_dict=param_dict)
 
 @app.route('/test')
 def test():

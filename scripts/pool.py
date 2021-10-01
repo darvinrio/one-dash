@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import time
 import copy
+import json
 from datetime import datetime as dt
 from datetime import timedelta
 from datetime import date
@@ -16,6 +17,18 @@ from bokeh.embed import components
 
 from scripts.formatters import * 
 from scripts.process_plot import get_div
+
+
+token_color_dict={
+    "uni":"#fc077d",
+    'weth':'#454a75',
+    'wbtc':'#ef9242',
+    'usdt':'#259c77',
+    'usdc':'#256fc0',
+    'dai':'#f4b731',
+    'frax':'#000000',
+    'seth2':'#95dd8c'
+}
 
 def get_uni_pool():
     api = 'https://api.flipsidecrypto.com/api/v2/queries/3a807bea-3e78-46ef-9b8c-2604a1bf38d1/data/latest'
@@ -41,12 +54,32 @@ def get_top_pools():
 uni_pool_df = get_uni_pool()
 uni_top_pool_json, uni_top_pool_df = get_top_pools()
 
-def get_page(pool_address,
-    start_date=dt.strptime("2021-05-05", "%Y-%m-%d"),
-    end_date=date.today()):
+
+def get_page_stuff(pool_address):
+    pool_df = uni_top_pool_df[uni_top_pool_df['POOL_ADDRESS']==pool_address]
+    
+    result = pool_df.to_json(orient="records")
+    pool_df = json.loads(result)[0]
+    
+    param_dict={
+        "pool_name":pool_df['POOL_NAME'],
+        "token0":pool_df['TOKEN0_SYMBOL'],
+        "token1":pool_df['TOKEN1_SYMBOL'],
+        "token0_icon":"img/crypto-logo/"+(pool_df['TOKEN0_SYMBOL'].lower())+".png",
+        "token1_icon":"img/crypto-logo/"+(pool_df['TOKEN1_SYMBOL'].lower())+".png",
+        'token0_color':token_color_dict[pool_df['TOKEN0_SYMBOL'].lower()],
+        'token1_color':token_color_dict[pool_df['TOKEN1_SYMBOL'].lower()]
+    }
+    
+    return param_dict
+
+
+def get_page(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end_date=date.today()):
 
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+
+    param_dict = get_page_stuff(pool_address)
 
     global uni_pool_df
     global uni_top_pool_df
@@ -60,13 +93,17 @@ def get_page(pool_address,
     area_list = ['GROSS_RESERVES_TOKEN0_ADJUSTED','GROSS_RESERVES_TOKEN1_ADJUSTED','SWAP_VOL', 'TVL_USD']
     bar_list = ['SWAP_COUNT','TOKEN0_IN','TOKEN0_OUT', 'TOKEN1_IN', 'TOKEN1_OUT']
 
+    token0_list = ['GROSS_RESERVES_TOKEN0_ADJUSTED','PRICE01','TOKEN0_IN','TOKEN0_OUT']
+    token1_list = ['GROSS_RESERVES_TOKEN1_ADJUSTED','PRICE10','TOKEN1_IN','TOKEN1_OUT']
+
     param_list=[{
             'func':col,
             'name':'Total Value Locked',
             'format':'format_number',
             'tick_format':'(0.00 a)',
             'div':None,
-            'plot':None
+            'plot':None,
+            'color':"#101419"
         } for col in plot_list
     ]
     for fun in param_list:
@@ -78,6 +115,12 @@ def get_page(pool_address,
             fun['tick_format']='(0.0000 a)'
             fun['format']='no_format'
 
+        if fun['func'] in token0_list:
+            fun['color'] = param_dict['token0_color']
+
+        if fun['func'] in token1_list:
+            fun['color'] = param_dict['token1_color']
+
 
     for fun in param_list:
         col = fun['func']
@@ -87,12 +130,12 @@ def get_page(pool_address,
         src['OUT'] = src[col].apply(eval(fun['format']))
         
         if col in line_list :
-            render = p.line(source=cds(src),x='DATE',y=col,line_width=2)
+            render = p.line(source=cds(src), x='DATE', y=col, color=fun['color'], line_width=2)
         elif col in area_list :
-            render = p.line(source=cds(src),x='DATE',y=col)
-            p.varea(source=cds(src),x='DATE',y1=0,y2=col,fill_alpha=0.7)
+            render = p.line(source=cds(src), x='DATE', y=col, color=fun['color'])
+            p.varea(source=cds(src), x='DATE', y1=0, y2=col, color=fun['color'], fill_alpha=0.7)
         elif col in bar_list :
-            render = p.vbar(source=cds(src),x='DATE',top=col,fill_alpha=0.7,hover_alpha=1,width=timedelta(days=0.7))
+            render = p.vbar(source=cds(src), x='DATE', top=col, color=fun['color'], fill_alpha=0.7, hover_alpha=1, width=timedelta(days=0.7))
         else:
             print('you missed '+ cols)
         
@@ -139,6 +182,8 @@ def get_page(pool_address,
         fun['script'] = script
 
     return param_list
+
+
 
 def get_front():
     for pool in uni_top_pool_json:

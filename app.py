@@ -37,7 +37,6 @@ def home():
     
 @app.route('/uni_stats')
 def uni_stats():
-    script,div = get_comps()
 
     uni_tvl,uni_vol = get_uni_stat_plot()
 

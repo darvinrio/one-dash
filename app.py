@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 
 import requests
-from datetime import datetime,date
+from datetime import datetime,date,timedelta
 
 files=[
     "static/js/plots/bokeh_plot.js"
@@ -25,7 +25,7 @@ from scripts.uniswap.fees import get_uni_fee_plots
 from scripts.uniswap.lp import get_uni_lp_plot
 from scripts.uniswap.lp_react import get_lp_react_plots
 
-from scripts.pool import get_page,get_front,get_page_stuff
+from scripts.pool import get_page,get_front,get_page_stuff,get_lp_range
 
 # from scripts.test2 import get_comps
 
@@ -62,7 +62,7 @@ def pool(pool_address):
 
     today = date.today()
     end_date = today.strftime("%d %b, %y")
-    start_date = datetime(2021,5,5).strftime("%d %b, %y")
+    start_date = (today + timedelta(-30) ).strftime("%d %b, %y")
 
     if request.method == 'POST':
         start_date = request.form['start_date']
@@ -72,16 +72,16 @@ def pool(pool_address):
             end_date = datetime.strptime(end_date, "%d %b, %Y")
         except:
             end_date = today
-        param_list = get_page(pool_address,start_date=start_date,end_date=end_date)
         
         end_date = end_date.strftime("%d %b, %y")
         start_date = start_date.strftime("%d %b, %y")
 
-    else:
-        param_list = get_page(pool_address)
-        
+    param_list = get_page(pool_address,start_date=start_date,end_date=end_date)
+    lp_range_script, lp_range_div = get_lp_range(pool_address)    
     param_dict = get_page_stuff(pool_address)    
     return render_template('uni/pool.html',
+            lp_range_script=lp_range_script, 
+            lp_range_div=lp_range_div,
             end_date=end_date,
             start_date=start_date,
             pool_address = pool_address, 

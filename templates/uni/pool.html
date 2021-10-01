@@ -242,10 +242,21 @@
     </div>
 </div>
 
+<div class="p-5">
+    <div class="card">
+        <div class="card-header">
+            LP positioning
+        </div>
+        <div class="card-content">
+            {{lp_range_div|safe}}
+        </div>
+    </div>
+</div>
 
 {% for func in param_list%}
 {{func.script|safe}}
 {% endfor %}
+{{lp_range_script|safe}}
 
 
 <script type="text/javascript">

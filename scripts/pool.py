@@ -11,7 +11,7 @@ from numerize import numerize
 
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource as cds
-from bokeh.models import HoverTool, CrosshairTool
+from bokeh.models import HoverTool, CrosshairTool, Range1d
 from bokeh.models import NumeralTickFormatter, CustomJS,DatetimeTickFormatter
 from bokeh.embed import components
 
@@ -50,10 +50,19 @@ def get_top_pools():
 
     return response.json(),df
 
+def get_uni_range():
+    api = 'https://api.flipsidecrypto.com/api/v2/queries/a863e3be-4615-48c7-986d-77fc6e7dd1e6/data/latest'
+    
+    response = requests.get(api)
+    print('Retrieved data')
+    df = pd.DataFrame(response.json())
+    df['DATE'] = pd.to_datetime(df['DATE']).dt.tz_localize(None)
+    df['DATE_STR'] = df['DATE'].dt.strftime("%d %b, %y")
+    return df.sort_values('DATE')
 
 uni_pool_df = get_uni_pool()
 uni_top_pool_json, uni_top_pool_df = get_top_pools()
-
+range_df = get_uni_range()
 
 def get_page_stuff(pool_address):
     pool_df = uni_top_pool_df[uni_top_pool_df['POOL_ADDRESS']==pool_address]
@@ -183,7 +192,63 @@ def get_page(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end
 
     return param_list
 
+def get_lp_range(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end_date=date.today()):
 
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    param_dict = get_page_stuff(pool_address)
+
+    lp_df = range_df[range_df['POOL_ADDRESS']==pool_address].reset_index(drop=True)
+    lp_df = lp_df[(lp_df['DATE']>=start_date) & (lp_df['DATE']<=end_date)]
+    major = lp_df['TOKEN0_SYMBOL'].value_counts().sort_values(ascending=False).index[0]
+    lp_df = lp_df[lp_df['TOKEN0_SYMBOL']==major]
+
+    color1 = token_color_dict[(lp_df['TOKEN0_SYMBOL'].unique()[0]).lower()] 
+    color0 = token_color_dict[(lp_df['TOKEN1_SYMBOL'].unique()[0]).lower()] 
+
+    p = figure(plot_height=300,x_axis_type='datetime',y_axis_label='Price'
+                  ,sizing_mode="stretch_width",tools='xpan,ypan,xwheel_zoom,ywheel_zoom,reset')
+
+    src = cds(lp_df)
+
+    aread = pd.concat([
+        lp_df['AVG_ETH_LOWER_USD'],
+        lp_df.sort_values('DATE',ascending=False)['AVG_ETH_HIGHER_USD']
+    ])
+    datad = pd.concat([
+        lp_df['DATE'],
+        lp_df.sort_values('DATE',ascending=False)['DATE']
+    ])
+
+    seg = p.segment(source=src,x0='DATE',x1='DATE',y0='MIN_ETH_PRICE',y1='MAX_ETH_PRICE',line_width=2,line_color=color0,legend_label='ETH price range')
+    p.patch(x=datad,y=aread,legend_label='LP price range',line_width=2,fill_alpha=0.5,fill_color=color1,line_color=color1)
+
+    crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)
+    tooltips = [('Date', '@DATE{%F}'),('ETH range', '@MAX_ETH_PRICE{(0.0000)} to @MIN_ETH_PRICE{(0.0000)} '),
+            ('LP range','@AVG_ETH_HIGHER_USD{(0.0000)} to @AVG_ETH_LOWER_USD{(0.0000)} ')]
+    hovertool = HoverTool(tooltips=tooltips,formatters={'@DATE': 'datetime'},mode='vline',renderers=[seg])
+    p.add_tools(crosshair,hovertool)
+
+    p.yaxis.formatter=NumeralTickFormatter(format="0.0000")
+    p.xaxis.formatter = DatetimeTickFormatter(months="%b %y")
+            
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
+    p.grid.visible=False
+
+    max_price = lp_df['MAX_ETH_PRICE'].max()
+    min_price = lp_df['MIN_ETH_PRICE'].min()
+    price_diff = max_price-min_price
+
+    p.y_range = Range1d(0 if (min_price-0.5*price_diff)<0 else (min_price-0.5*price_diff), max_price+0.5*price_diff)
+
+    lp_range_script, lp_range_div = components(p)
+    return lp_range_script, lp_range_div
 
 def get_front():
     for pool in uni_top_pool_json:

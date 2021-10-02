@@ -12,8 +12,6 @@
         color: white;
         background-color: #fc077d;
     }
-
-
 </style>
 {% endblock %}
 
@@ -94,16 +92,11 @@
 </div>
 </div>
 
+
 <div class="container py-2">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             Fee Generation based on Tier
-            <div class="p-4" style="position: absolute; right: 0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                    data-bs-target="#feeModal">
-                    <i class="bi bi-info-circle"></i>
-                </button>
-            </div>
         </div>
         <div class="card-body text-center">
             <div class="card">
@@ -131,20 +124,53 @@
                     </div>
                 </div>
             </div>
+
+            <div class="accordion pt-4" id="fee_accordian">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                            data-mdb-target="#fee_collapseOne" aria-expanded="true" aria-controls="fee_collapseOne">
+                            Analysis
+                        </button>
+                    </h2>
+                    <div id="fee_collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                        data-mdb-parent="#fee_accordian">
+                        <div class="accordion-body">
+                            <p class="text-start">
+                                One of the most important decisions for an LP in uniswapv3 is to choose the appropriate
+                                fee
+                                tier to make good returns from the liquidity they provide.
+                                Though in the outset, 1% looks like a smart choice to get the most out of your liquidity
+                                position.<a href="https://twitter.com/darksoulsfanlol"
+                                    target="_blank">@darksoulsfanlol</a>
+                                suggests that is not the case in this data backed analysis.
+                                <ul class="text-start">
+                                    <li>0.3 % generates the most volume</li>
+                                    <li>most likely due to most LPs transitioning from v2 choosing to keep the tried and test fee tier.</li>
+                                    <li>as the difference is shrinking, in the long run, one can expect the LPs to adapt to the versatility of fee tiers</li>
+                                
+                                    <li>stick to 1% APR for low volume pools</li>
+                                    <li>stay away from 0.05% fee tier</li>
+                                    <li>when in doubt go for 0.3%</li>
+                                    <li>Impermanent loss can still wreck your wallet</li>
+                                </ul>
+                                <a href="https://app.flipsidecrypto.com/dashboard/best-uniswap-fee-ChF2eD" target="_blank">read full analysis...</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
+
+
 
 <div class="container py-2">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             Daily LP and Liquidity activity
-            <div class="p-4" style="position: absolute; right: 0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                    data-bs-target="#lpreactModal">
-                    <i class="bi bi-info-circle"></i>
-                </button>
-            </div>
         </div>
         <div class="card-body">
             <div class="row text-center">
@@ -164,6 +190,41 @@
                 <div class="col text-center text-white" style="background-color: #ff0079;">reduced exposure</div>
                 <div class="col text-center text-white" style="background-color:black;">other</div>
             </nav>
+            <div class="accordion pt-4" id="react_accordian">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-mdb-toggle="collapse"
+                      data-mdb-target="#react_collapseOne"
+                      aria-expanded="true"
+                      aria-controls="react_collapseOne"
+                    >
+                      Analysis
+                    </button>
+                  </h2>
+                  <div
+                    id="react_collapseOne"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="headingOne"
+                    data-mdb-parent="#react_accordian"
+                  >
+                    <div class="accordion-body text-start">
+                     <p class="">
+                Andruu took a look at how LPs and the Liquidity react to market conditions. 
+                In order to read these plots, use the legends above. The legend describes activity that occur to a liquidity position. For example, say floated into range, in the graph on the left this means, the LP moved the ranges manually, where as in the graph on right it means, the liquidity moved back into range, and so on.
+                <ul>
+                    <li>Unstable-Unstable pairs usually had their out of range positions drifted manually back by the LPs.Atleast 20 percent was left out of bounds probably anticipating price movements. However these were less chaotic that the Unstable-Stable pairs</li>
+                    <li>Unstable-Stable pairs are the most chaotic. The liquidity is consistently out of range and the LP has to be very active to float them back. Consistently 70% of LP activity is moving the ranges to capture the price action.</li>
+                    <li>Life as a provider to Stable-Stable pair is peaceful. Thought there were out of bounds ranges during volatile times, at the end of the day, majority of these return back to range on their own, since they have to keep their peg.</li>
+                </ul>
+                <a href="https://app.flipsidecrypto.com/dashboard/active-liquidity-for-5-largest-pools-in-uniswap-v3-FjX31D" target="_blank">read full analysis...</a>
+            </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>
     </div>
 </div>
@@ -172,15 +233,46 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             ETH ranges vs LP ranges
-            <div class="p-4" style="position: absolute; right: 0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                    data-bs-target="#lprangeModal">
-                    <i class="bi bi-info-circle"></i>
-                </button>
-            </div>
         </div>
         <div class="card-body">
             {{uni_lp_plot|safe}}
+
+            <div class="accordion pt-4" id="range_accordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-mdb-toggle="collapse"
+                      data-mdb-target="#range_collapseOne"
+                      aria-expanded="true"
+                      aria-controls="range_collapseOne"
+                    >
+                      Analysis
+                    </button>
+                  </h2>
+                  <div
+                    id="range_collapseOne"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="headingOne"
+                    data-mdb-parent="#range_accordion"
+                  >
+                    <div class="accordion-body text-start">
+                        Kida#8864 analysed the popular ETH-USDC pool's top Liquidity Providers to see how efficient they are , and lessons to be learnt from them. 
+                        In the graph on the right, in top you can see the ETH's price range as line segments, while the LP's liquidity range as shaded area.In bottom, you can see the volatility compared to the percentage range of LP position. Ideally, we want both the black regions to be completely and tightly engulfed by the red areas for maximum capital efficiency.
+                        <ul>
+                            <li>The LPs consistently managed to enclose all of the ETH price for majority of the days. Only days of extreme volatility pushed these LPs out of position. </li>
+                            <li>This means, generally the LPs are either very good at prediciting the price range of ETH or very reactive to changes, both of which are rewarding in Uniswapv3</li>
+                            <li>A position gap of greater than 5% is required, or else transactions will go out of bounds</li>
+                            <li>A 25% price gap looks like overkill on most days.</li>
+                            <li>15% to 30% price gap with previous day average ETH price at center, is the analyst's recommendation for LP ranges.</li>
+                        </ul>
+                        <a href="https://app.flipsidecrypto.com/dashboard/uniswap-active-positions-and-their-price-ranges-UjLwpy" target="_blank">read full analysis...</a>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>
     </div>
 </div>
@@ -189,145 +281,6 @@
 {#Modals#}
 
 
-{#LP react modal#}
-<div class="modal fade" id="lpreactModal" tabindex="-1" aria-labelledby="lpreactModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="lpreactModalLabel">Reacting to out of bounds</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
-                        class="bi bi-x-lg"></i></button>
-            </div>
-            <div class="modal-body">
-                ...
-                <h3 class="title is_size-3 pl-2">
-                    Reacting to out of bound ranges like a pro LP ...
-                </h3>
 
-                <div class="content p-2 has-text-justified">
-                    <p class="is-size-6">
-                        Andruu took a look at how LPs and the Liquidity react to market conditions.
-                        In order to read these plots, use the legends above. The legend describes activity that occur to
-                        a liquidity position. For example, say floated into range, in the graph on the left this means,
-                        the LP moved the ranges manually, where as in the graph on right it means, the liquidity moved
-                        back into range, and so on.
-                    <ul>
-                        <li>Unstable-Unstable pairs usually had their out of range positions drifted manually back by
-                            the LPs.Atleast 20 percent was left out of bounds probably anticipating price movements.
-                            However these were less chaotic that the Unstable-Stable pairs</li>
-                        <li>Unstable-Stable pairs are the most chaotic. The liquidity is consistently out of range and
-                            the LP has to be very active to float them back. Consistently 70% of LP activity is moving
-                            the ranges to capture the price action.</li>
-                        <li>Life as a provider to Stable-Stable pair is peaceful. Thought there were out of bounds
-                            ranges during volatile times, at the end of the day, majority of these return back to range
-                            on their own, since they have to keep their peg.</li>
-                    </ul>
-                    <a href="https://app.flipsidecrypto.com/dashboard/active-liquidity-for-5-largest-pools-in-uniswap-v3-FjX31D"
-                        target="_blank">read full analysis...</a>
-                    </p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-{#fee modal#}
-<div class="modal fade" id="feeModal" tabindex="-1" aria-labelledby="feeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="feeModalLabel">Choosing fee-tiers</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
-                        class="bi bi-x-lg"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="content has-text-justified">
-                    <h3 class="title is-size-3 pl-2">
-                        Is 1% the right choice ?
-                    </h3>
-                    <p class="is-size-6">
-                        One of the most important decisions for an LP in uniswapv3 is to choose the appropriate fee tier
-                        to make good returns from the liquidity they provide. <br>
-                        Though in the outset, 1% looks like a smart choice to get the most out of your liquidity
-                        position.<a href="https://twitter.com/darksoulsfanlol" target="_blank">@darksoulsfanlol</a>
-                        suggests that is not the case in this data backed analysis.
-                    <ul>
-                        <li>0.3 % generates the most volume</li>
-                        <li>most likely due to most LPs transitioning from v2 choosing to keep the tried and test fee
-                            tier.</li>
-                        <li>as the difference is shrinking, in the long run, one can expect the LPs to adapt to the
-                            versatility of fee tiers</li>
-                    </ul>
-                    <p class="has-text-danger">
-                        Note: the graphs have log-scale, so actual differences are to be amplified by a factor of 10.
-                    </p>
-                    The analysis, suggests
-                    <ul>
-                        <li>stick to 1% APR for low volume pools</li>
-                        <li>stay away from 0.05% fee tier</li>
-                        <li>when in doubt go for 0.3%</li>
-                        <li>Impermanent loss can still wreck your wallet</li>
-                    </ul>
-                    <a href="https://app.flipsidecrypto.com/dashboard/best-uniswap-fee-ChF2eD" target="_blank">read full
-                        analysis...</a>
-                    </p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-{#lp range modal#}
-<div class="modal fade" id="lprangeModal" tabindex="-1" aria-labelledby="lprangeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="lprangeModalLabel">Efficiency of LPs for ETH-USDC pair</h5>
-                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
-                        class="bi bi-x-lg"></i></button>
-            </div>
-            <div class="modal-body">
-                ...
-                <h3 class="title is_size-3 pl-2">
-                    Efficiency of LPs for ETH-USDC pair
-                </h3>
-
-                <div class="content p-2 has-text-justified">
-                    <p class="is-size-6">
-                        Kida#8864 analysed the popular ETH-USDC pool's top Liquidity Providers to see how efficient they
-                        are , and lessons to be learnt from them.
-                        In the graph on the right, in top you can see the ETH's price range as line segments, while the
-                        LP's liquidity range as shaded area.In bottom, you can see the volatility compared to the
-                        percentage range of LP position. Ideally, we want both the black regions to be completely and
-                        tightly engulfed by the red areas for maximum capital efficiency.
-                    <ul>
-                        <li>The LPs consistently managed to enclose all of the ETH price for majority of the days. Only
-                            days of extreme volatility pushed these LPs out of position. </li>
-                        <li>This means, generally the LPs are either very good at prediciting the price range of ETH or
-                            very reactive to changes, both of which are rewarding in Uniswapv3</li>
-                        <li>A position gap of greater than 5% is required, or else transactions will go out of bounds
-                        </li>
-                        <li>A 25% price gap looks like overkill on most days.</li>
-                        <li>15% to 30% price gap with previous day average ETH price at center, is the analyst's
-                            recommendation for LP ranges.</li>
-                    </ul>
-                    <a href="https://app.flipsidecrypto.com/dashboard/uniswap-active-positions-and-their-price-ranges-UjLwpy"
-                        target="_blank">read full analysis...</a>
-
-                    </p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 {% endblock %}

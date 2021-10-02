@@ -121,7 +121,7 @@ def get_page(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end
             'tick_format':'(0.00 a)',
             'div':None,
             'plot':None,
-            'color':"#101419"
+            'color':"#22316c"
         } for col in plot_list
     ]
     for fun in param_list:
@@ -173,7 +173,7 @@ def get_page(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end
             </div>
             """
         p.yaxis.formatter=NumeralTickFormatter(format=fun['tick_format'])
-        p.xaxis.formatter = DatetimeTickFormatter(months="%b %y")
+        p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
         
         p.yaxis.minor_tick_line_color = None
         p.yaxis.major_tick_line_color = None
@@ -313,7 +313,7 @@ def get_lp_react(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"),
         hovertool = HoverTool(tooltips=tooltips,formatters={'@index': 'datetime'})
         p.add_tools(crosshair,hovertool)
         p.yaxis.formatter=NumeralTickFormatter(format="00.00%")
-        p.xaxis.formatter=DatetimeTickFormatter()
+        p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
 
         p.vbar_stack(label, x='index',color=color_dict,source=d,width=timedelta(days=0.7),fill_alpha=0.7,hover_alpha=1)
         p.y_range = Range1d(0,1)

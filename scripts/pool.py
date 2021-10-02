@@ -40,6 +40,13 @@ def get_uni_pool():
     df['DATE_STR'] = df['DATE'].dt.strftime("%d %b, %y")
     return df.sort_values('DATE')
 
+def get_lp_react():
+    api = 'https://api.flipsidecrypto.com/api/v2/queries/c7b5ca8c-31a8-4764-82ec-88e593949d14/data/latest'
+    response = requests.get(api)
+    print('Retrieved data')
+    df = pd.DataFrame(response.json())
+    df['BLK_DATE'] = pd.to_datetime(df['BLK_DATE']).dt.tz_localize(None)
+    return df.sort_values(['BLK_DATE','CHANGE_THAT_DAY']).reset_index(drop=True)
 
 def get_top_pools():
     api='https://api.flipsidecrypto.com/api/v2/queries/7587d835-dd9f-4b0b-8a15-2b9c73c462f8/data/latest'
@@ -63,6 +70,8 @@ def get_uni_range():
 uni_pool_df = get_uni_pool()
 uni_top_pool_json, uni_top_pool_df = get_top_pools()
 range_df = get_uni_range()
+react_df = get_lp_react()
+
 
 def get_page_stuff(pool_address):
     pool_df = uni_top_pool_df[uni_top_pool_df['POOL_ADDRESS']==pool_address]
@@ -192,6 +201,7 @@ def get_page(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end
 
     return param_list
 
+
 def get_lp_range(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end_date=date.today()):
 
     start_date = pd.to_datetime(start_date)
@@ -213,20 +223,20 @@ def get_lp_range(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"),
     src = cds(lp_df)
 
     aread = pd.concat([
-        lp_df['AVG_ETH_LOWER_USD'],
+        lp_df.sort_values('DATE')['AVG_ETH_LOWER_USD'],
         lp_df.sort_values('DATE',ascending=False)['AVG_ETH_HIGHER_USD']
     ])
     datad = pd.concat([
-        lp_df['DATE'],
+        lp_df.sort_values('DATE')['DATE'],
         lp_df.sort_values('DATE',ascending=False)['DATE']
     ])
 
-    seg = p.segment(source=src,x0='DATE',x1='DATE',y0='MIN_ETH_PRICE',y1='MAX_ETH_PRICE',line_width=2,line_color=color0,legend_label='ETH price range')
-    p.patch(x=datad,y=aread,legend_label='LP price range',line_width=2,fill_alpha=0.5,fill_color=color1,line_color=color1)
+    seg = p.segment(source=src,x0='DATE',x1='DATE',y0='MIN_ETH_PRICE',y1='MAX_ETH_PRICE',line_width=2,line_color=color0,legend_label=(lp_df['TOKEN1_SYMBOL'].unique()[0])+' price range')
+    p.varea(source=src,x='DATE',y1='AVG_ETH_LOWER_USD',y2='AVG_ETH_HIGHER_USD',fill_alpha=0.5,fill_color=color1,legend_label=(lp_df['TOKEN0_SYMBOL'].unique()[0])+' liquidity range')
 
     crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)
-    tooltips = [('Date', '@DATE{%F}'),('ETH range', '@MAX_ETH_PRICE{(0.0000)} to @MIN_ETH_PRICE{(0.0000)} '),
-            ('LP range','@AVG_ETH_HIGHER_USD{(0.0000)} to @AVG_ETH_LOWER_USD{(0.0000)} ')]
+    tooltips = [('Date', '@DATE{%F}'),((lp_df['TOKEN1_SYMBOL'].unique()[0])+' price range', '@MAX_ETH_PRICE{(0.0000)} to @MIN_ETH_PRICE{(0.0000)} '),
+            ((lp_df['TOKEN0_SYMBOL'].unique()[0])+' liquidity range','@AVG_ETH_HIGHER_USD{(0.0000)} to @AVG_ETH_LOWER_USD{(0.0000)} ')]
     hovertool = HoverTool(tooltips=tooltips,formatters={'@DATE': 'datetime'},mode='vline',renderers=[seg])
     p.add_tools(crosshair,hovertool)
 
@@ -249,6 +259,82 @@ def get_lp_range(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"),
 
     lp_range_script, lp_range_div = components(p)
     return lp_range_script, lp_range_div
+
+
+def get_lp_react(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end_date=date.today()):
+
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    types = ['Floated_into_range','Other','Still_out_of_range','Updated_range','Reduced_exposure']
+    color_dict=['#f4b731','black','#0c3694','#4bdb4b','#ff0079','magenta']
+    param_dict = get_page_stuff(pool_address)
+    pool_name = param_dict['pool_name']
+
+    source_df = react_df[react_df['POOL_NAME'] == pool_name ]
+    source_df = source_df[(source_df['BLK_DATE']>=start_date) & (source_df['BLK_DATE']<=end_date)]
+
+
+    f = pd.pivot_table(source_df,values=[
+        'PCT_MIN_LIQUIDITY_ADJUSTED_AVG',
+        'PCT_NUM_ACTIVE_LPS_AVG'
+    ],index=['BLK_DATE'],columns=['CHANGE_THAT_DAY'],fill_value=0)
+
+
+    out_dict=[
+        {
+            'title':'Liqudity activity',
+            'div':None,
+            'script':None
+        },
+        {
+            'title':'Liquidity Provider Reaction',
+            'div':None,
+            'script':None
+        }
+    ]
+    
+    for move in ['PCT_MIN_LIQUIDITY_ADJUSTED_AVG','PCT_NUM_ACTIVE_LPS_AVG']:
+        d = {}
+        for typ in types:
+            try:
+                d[typ]=list(f[move][typ])
+            except:
+                d[typ]=[0]*len(list(f[move].index))
+        d['index']=list(f[move].index)
+        label=list(d.keys())
+        p = figure(plot_height=300,x_axis_type='datetime'
+                    ,x_axis_label='Time'
+                    ,sizing_mode="stretch_width",tools='xpan,ypan,ywheel_zoom,xwheel_zoom,reset')
+
+        crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)
+        tooltips = [('Date', '@index'),('Action', '$name'),
+                ('percent','@$name{00.00%}')]
+        hovertool = HoverTool(tooltips=tooltips,formatters={'@index': 'datetime'})
+        p.add_tools(crosshair,hovertool)
+        p.yaxis.formatter=NumeralTickFormatter(format="00.00%")
+        p.xaxis.formatter=DatetimeTickFormatter()
+
+        p.vbar_stack(label, x='index',color=color_dict,source=d,width=timedelta(days=0.7),fill_alpha=0.7,hover_alpha=1)
+        p.y_range = Range1d(0,1)
+        
+        p.yaxis.minor_tick_line_color = None
+        p.yaxis.major_tick_line_color = None
+        p.xaxis.minor_tick_line_color = None
+        p.xaxis.major_tick_line_color = None
+        p.xaxis.axis_line_color = None
+        p.yaxis.axis_line_color = None
+        p.background_fill_alpha = 0
+        p.grid.visible=False
+
+        n=1
+        if move == 'PCT_MIN_LIQUIDITY_ADJUSTED_AVG':
+            n=0
+
+        out_dict[n]['script'], out_dict[n]['div'] = components(p) 
+
+    return out_dict
+
 
 def get_front():
     for pool in uni_top_pool_json:

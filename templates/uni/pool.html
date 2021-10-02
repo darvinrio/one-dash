@@ -7,7 +7,14 @@
         border: 0px !important;
         width: 150px !important;
     }
+
+    .card-header {
+        color: white;
+        background-color: #fc077d;
+    }
 </style>
+<link rel="stylesheet" href="{{url_for('static',filename='css/rio.css')}}">
+
 {% endblock %}
 
 {#
@@ -44,10 +51,11 @@
                 <form action="/uni_pool/{{pool_address}}" method="POST">
                     <div class="input-group input-daterange">
 
-                        <input type="text" class="form-control" value="{{start_date}}"  name="start_date" id="start_date">
+                        <input type="text" class="form-control" value="{{start_date}}" name="start_date"
+                            id="start_date">
                         <div class="input-group-addon">to</div>
-                        <input type="text" class="form-control" value="{{end_date}}" style='width: 100px;' name="end_date"
-                            id="end_date">
+                        <input type="text" class="form-control" value="{{end_date}}" style='width: 100px;'
+                            name="end_date" id="end_date">
                         <button class="btn btn-light" type="submit" value="set">Set</button>
                     </div>
                 </form>
@@ -253,10 +261,46 @@
     </div>
 </div>
 
+<div class="p-5">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-header">
+                        {{react_dict[0].title|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{react_dict[0].div|safe}}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        {{react_dict[1].title|safe}}
+                    </div>
+                    <div class="card-body">
+                        {{react_dict[1].div|safe}}
+                    </div>
+                </div>
+            </div>
+            <nav class="row">
+                <div class="col text-center text-white" style="background-color: #f4b731;">floated into range</div>
+                <div class="col text-center text-white" style="background-color: #0c3694;">out of range</div>
+                <div class="col text-center text-white" style="background-color: #4bdb4b;">updated range</div>
+                <div class="col text-center text-white" style="background-color: #ff0079;">reduced exposure</div>
+                <div class="col text-center text-white" style="background-color:black;">other</div>
+            </nav>
+        </div>
+    </div>
+</div>
+
 {% for func in param_list%}
 {{func.script|safe}}
 {% endfor %}
 {{lp_range_script|safe}}
+{% for plot in react_dict %}
+{{plot.script|safe}}
+{% endfor %}
+
 
 
 <script type="text/javascript">

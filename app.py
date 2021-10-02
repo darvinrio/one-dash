@@ -25,7 +25,7 @@ from scripts.uniswap.fees import get_uni_fee_plots
 from scripts.uniswap.lp import get_uni_lp_plot
 from scripts.uniswap.lp_react import get_lp_react_plots
 
-from scripts.pool import get_page,get_front,get_page_stuff,get_lp_range
+from scripts.pool import get_page,get_front,get_page_stuff,get_lp_range, get_lp_react
 
 # from scripts.test2 import get_comps
 
@@ -78,7 +78,9 @@ def pool(pool_address):
 
     param_list = get_page(pool_address,start_date=start_date,end_date=end_date)
     lp_range_script, lp_range_div = get_lp_range(pool_address)    
-    param_dict = get_page_stuff(pool_address)    
+    param_dict = get_page_stuff(pool_address) 
+    react_dict = get_lp_react(pool_address,start_date=start_date,end_date=end_date)
+
     return render_template('uni/pool.html',
             lp_range_script=lp_range_script, 
             lp_range_div=lp_range_div,
@@ -86,7 +88,8 @@ def pool(pool_address):
             start_date=start_date,
             pool_address = pool_address, 
             param_list=param_list,
-            param_dict=param_dict)
+            param_dict=param_dict,
+            react_dict=react_dict)
 
 @app.route('/test')
 def test():

@@ -8,7 +8,7 @@ from datetime import datetime as dt
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource as cds
 from bokeh.models import HoverTool, CrosshairTool
-from bokeh.models import NumeralTickFormatter, CustomJS
+from bokeh.models import NumeralTickFormatter, DatetimeTickFormatter, CustomJS
 from bokeh.models import Range1d
 
 from bokeh.resources import CDN
@@ -59,9 +59,18 @@ def get_uni_fee_plot():
     p.add_tools(hover,crosshair)
     p.legend.click_policy="hide"
     p.outline_line_color = None
-    p.grid.visible = False
+    # p.grid.visible = False
     p.y_range = Range1d((10**4),10**8)
     p.yaxis.formatter=NumeralTickFormatter(format="$ 0.00 a")
+
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
 
     return get_div(p)
 
@@ -86,8 +95,17 @@ def get_uni_volat_plot():
     p.add_tools(hover,crosshair)
     p.legend.click_policy="hide"
     p.outline_line_color = None
-    p.grid.visible = False
+    # p.grid.visible = False
     p.legend.location = "bottom_left"
+
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
 
     return get_div(p)
 
@@ -112,8 +130,17 @@ def get_uni_nice_plot():
     p.add_tools(hover,crosshair)
     p.legend.click_policy="hide"
     p.outline_line_color = None
-    p.grid.visible = False
+    # p.grid.visible = False
     p.legend.location = "bottom_left"
+
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
 
     return get_div(p)
 

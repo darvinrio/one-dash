@@ -76,8 +76,8 @@
                     {{pool_address}}
                 </div>
                 <div class="col-2 d-flex align-items-center justify-content-center">
-                    <img src="{{url_for('static',filename=param_dict.token1_icon)}}" width="100">
                     <img src="{{url_for('static',filename=param_dict.token0_icon)}}" width="100">
+                    <img src="{{url_for('static',filename=param_dict.token1_icon)}}" width="100">
                 </div>
                 <div id="24hr_stats" class="col">
                     <div class="row">
@@ -127,6 +127,97 @@
 <div class="p-5">
     <div class="row">
         <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
+                    {{param_dict.token0}} in Pool
+                </div>
+                <div class="card-body">
+                    {{param_list[0].div|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
+                    {{param_dict.token1}} in Pool
+                </div>
+                <div class="card-body">
+                    {{param_list[1].div|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
+                    swap in 1 {{param_dict.token0}} for
+                </div>
+                <div class="card-body">
+                    {{param_list[3].div|safe}} {{param_dict.token1}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
+                   swap in 1 {{param_dict.token1}} for
+                </div>
+                <div class="card-body">
+                    {{param_list[2].div|safe}} {{param_dict.token0}}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="p-5">
+    <div class="row">
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
+                   {{param_dict.token0}} swapped in 
+                </div>
+                <div class="card-body">
+                    {{param_list[6].div|safe}} 
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
+                   {{param_dict.token1}} swapped in 
+                </div>
+                <div class="card-body">
+                    {{param_list[8].div|safe}} 
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
+                   {{param_dict.token0}} swapped out 
+                </div>
+                <div class="card-body">
+                    {{param_list[7].div|safe}} 
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
+                   {{param_dict.token1}} swapped out
+                </div>
+                <div class="card-body">
+                    {{param_list[9].div|safe}} 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-5">
+    <div class="row">
+        <div class="col">
             <div id="TVL_USD" class="card">
                 <div class="card-header">
                     Total Value Locked
@@ -159,6 +250,10 @@
     </div>
 
 </div>
+
+
+
+
 
 <div class="p-5">
     <div class="row">
@@ -253,7 +348,7 @@
 <div class="p-5">
     <div class="card">
         <div class="card-header">
-            LP positioning
+            Top 10 Liquidity Provider's positioning 
         </div>
         <div class="card-content">
             {{lp_range_div|safe}}
@@ -293,10 +388,78 @@
     </div>
 </div>
 
+<div class="p-5">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Slippage of past 7000 swaps
+                </div>
+                <div class="card-body">
+                    {{slip_dict.div|safe}}
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <p class="p-2">
+                75% of swaps under {{slip_dict.all75|safe}} slippage
+            </p>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Slippage 
+                </div>
+                <div class="card-body">
+                    <img src="{{url_for('static',filename='img/heatmaps/small.png')}}" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Slippage 
+                </div>
+                <div class="card-body">
+                    <img src="{{url_for('static',filename='img/heatmaps/med.png')}}" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Slippage 
+                </div>
+                <div class="card-body">
+                    <img src="{{url_for('static',filename='img/heatmaps/big.png')}}" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Slippage 
+                </div>
+                <div class="card-body">
+                    <img src="{{url_for('static',filename='img/heatmaps/whale.png')}}" class="img-fluid" alt="">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 {% for func in param_list%}
 {{func.script|safe}}
 {% endfor %}
+
 {{lp_range_script|safe}}
+{{slip_dict.script|safe}}
+
 {% for plot in react_dict %}
 {{plot.script|safe}}
 {% endfor %}

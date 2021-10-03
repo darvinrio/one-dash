@@ -8,7 +8,7 @@ from datetime import timedelta
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource as cds
 from bokeh.models import HoverTool, CrosshairTool
-from bokeh.models import NumeralTickFormatter, CustomJS
+from bokeh.models import NumeralTickFormatter, DatetimeTickFormatter, CustomJS
 
 from bokeh.resources import CDN
 from bokeh.embed import autoload_static
@@ -46,7 +46,9 @@ def get_uni_vol():
 def get_uni_tvl_plot():
     uni_tvl_df = get_uni_tvl()
 
-    p = figure(x_axis_type='datetime',plot_height=300,x_axis_label='Time',y_axis_label='TVL_USD',sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p = figure(x_axis_type='datetime',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p.varea(source=cds(uni_tvl_df),x='BLOCK_HOUR',y2='TOTAL_LIQUIDITY_USD',y1=0 ,fill_color='#fc077d',fill_alpha=0.7)
+
     line = p.line(source=cds(uni_tvl_df),x='BLOCK_HOUR',y='TOTAL_LIQUIDITY_USD',line_color='#fc077d',line_width=2)
 
 
@@ -69,7 +71,7 @@ def get_uni_tvl_plot():
         </div>
         """
 
-    hover = HoverTool(tooltips = tooltips ,formatters={'@BLOCK_HOUR': 'datetime'},callback=callback, mode='vline')
+    hover = HoverTool(tooltips = tooltips ,formatters={'@BLOCK_HOUR': 'datetime'},callback=callback, mode='vline',renderers=[line])
 
     hover.show_arrow = False
     p.outline_line_color = None
@@ -77,13 +79,24 @@ def get_uni_tvl_plot():
     p.grid.visible = False
     p.add_tools(hover,crosshair)
 
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
+    p.yaxis.visible = False
+    p.grid.visible = False
+
     return get_div(p)
 
 
 def get_uni_vol_plot():
     uni_vol_df = get_uni_vol()
     
-    p = figure(x_axis_type='datetime',x_axis_label='Time',y_axis_label='TVL_USD',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p = figure(x_axis_type='datetime',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
     line = p.vbar(source=cds(uni_vol_df),x='DATE',top='DAILY_USD_VOLUME',width=timedelta(days=0.7), fill_color='#fc077d',line_color='#fc077d')
 
 
@@ -112,7 +125,14 @@ def get_uni_vol_plot():
     hover.show_arrow = False
     hover.line_policy="next"
     p.add_tools(hover,crosshair)
-    p.outline_line_color = None
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
     p.yaxis.visible = False
     p.grid.visible = False
 

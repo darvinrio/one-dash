@@ -8,7 +8,7 @@ from datetime import datetime as dt
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource as cds
 from bokeh.models import HoverTool, CrosshairTool
-from bokeh.models import NumeralTickFormatter, CustomJS
+from bokeh.models import NumeralTickFormatter, DatetimeTickFormatter, CustomJS
 from bokeh.layouts import layout
 
 from bokeh.resources import CDN
@@ -85,6 +85,16 @@ def make_lp_react_plots():
             p.vbar_stack(label, x='index',color=color_dict,source=d,fill_alpha=0.7,hover_alpha=1)
             p.xaxis.visible=False
             p.grid.visible=False
+
+            p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+
+            p.yaxis.minor_tick_line_color = None
+            p.yaxis.major_tick_line_color = None
+            p.xaxis.minor_tick_line_color = None
+            p.xaxis.major_tick_line_color = None
+            p.xaxis.axis_line_color = None
+            p.yaxis.axis_line_color = None
+            
             if move == 'PCT_MIN_LIQUIDITY_ADJUSTED_AVG':
                 out_dict[key]['liq_plot'] = p
             else:

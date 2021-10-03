@@ -8,7 +8,7 @@ from datetime import datetime as dt
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource as cds
 from bokeh.models import HoverTool, CrosshairTool
-from bokeh.models import NumeralTickFormatter, CustomJS
+from bokeh.models import NumeralTickFormatter, DatetimeTickFormatter, CustomJS
 from bokeh.layouts import layout
 
 from bokeh.resources import CDN
@@ -54,6 +54,14 @@ def make_uni_lp_plot():
     p.add_tools(crosshair,hovertool)
     p.yaxis.formatter=NumeralTickFormatter(format="$ 0000.00")
     p.xaxis.visible=False
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
 
     #sub plot
     p2 = figure(x_axis_type='datetime',plot_height=200,y_axis_label='Percent'
@@ -69,6 +77,15 @@ def make_uni_lp_plot():
     hovertool = HoverTool(tooltips=tooltips,formatters={'@DATE': 'datetime'},mode='vline',renderers=[seg])
     p2.add_tools(crosshair,hovertool)
     p2.yaxis.formatter=NumeralTickFormatter(format="00.00")
+
+    p2.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+
+    p2.yaxis.minor_tick_line_color = None
+    p2.yaxis.major_tick_line_color = None
+    p2.xaxis.minor_tick_line_color = None
+    p2.xaxis.major_tick_line_color = None
+    p2.xaxis.axis_line_color = None
+    p2.yaxis.axis_line_color = None
 
     #layout
     l = layout([p,p2],sizing_mode="stretch_width")

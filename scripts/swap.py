@@ -85,9 +85,10 @@ def get_slip_hist(pool_address):
     script,div = components(p)
 
     out_dict={
-        'script':script,
-        'div':div,
-        'all75':"{:.00%}".format(swap_pool_df['SLIPPAGE'].describe()['75%'])
+        'script': script,
+        'div': div,
+        'all75': "{:.2%}".format(swap_pool_df['SLIPPAGE'].describe()['75%']),
+        'mean': "{:.2%}".format(swap_pool_df['SLIPPAGE'].describe()['mean'])
     }
 
     return out_dict

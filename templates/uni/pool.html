@@ -159,14 +159,14 @@
         <div class="col">
             <div class="card text-center">
                 <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                   swap in 1 {{param_dict.token1}} for
+                    swap in 1 {{param_dict.token1}} for
                 </div>
                 <div class="card-body">
                     {{param_list[2].div|safe}} {{param_dict.token0}}
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 
@@ -175,40 +175,40 @@
         <div class="col">
             <div class="card text-center">
                 <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
-                   {{param_dict.token0}} swapped in 
+                    {{param_dict.token0}} swapped in
                 </div>
                 <div class="card-body">
-                    {{param_list[6].div|safe}} 
+                    {{param_list[6].div|safe}}
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="card text-center">
                 <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                   {{param_dict.token1}} swapped in 
+                    {{param_dict.token1}} swapped in
                 </div>
                 <div class="card-body">
-                    {{param_list[8].div|safe}} 
+                    {{param_list[8].div|safe}}
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="card text-center">
                 <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
-                   {{param_dict.token0}} swapped out 
+                    {{param_dict.token0}} swapped out
                 </div>
                 <div class="card-body">
-                    {{param_list[7].div|safe}} 
+                    {{param_list[7].div|safe}}
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="card text-center">
                 <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                   {{param_dict.token1}} swapped out
+                    {{param_dict.token1}} swapped out
                 </div>
                 <div class="card-body">
-                    {{param_list[9].div|safe}} 
+                    {{param_list[9].div|safe}}
                 </div>
             </div>
         </div>
@@ -348,10 +348,13 @@
 <div class="p-5">
     <div class="card">
         <div class="card-header">
-            Top 10 Liquidity Provider's positioning 
+            Top 10 Liquidity Provider's positioning
         </div>
         <div class="card-content">
             {{lp_range_div|safe}}
+            <p class="text-center pt-2">
+                The price range of one asset and the Liquidity concentration of the other asset provided by the Top10 most active LPs is visualized. Anomalies cause massive deviations. But the general picture of liquidity concentration can be seen.
+            </p>
         </div>
     </div>
 </div>
@@ -377,77 +380,136 @@
                     </div>
                 </div>
             </div>
-            <nav class="row">
+            <nav class="row px-3">
                 <div class="col text-center text-white" style="background-color: #f4b731;">floated into range</div>
                 <div class="col text-center text-white" style="background-color: #0c3694;">out of range</div>
                 <div class="col text-center text-white" style="background-color: #4bdb4b;">updated range</div>
                 <div class="col text-center text-white" style="background-color: #ff0079;">reduced exposure</div>
                 <div class="col text-center text-white" style="background-color:black;">other</div>
             </nav>
+            <p class="pt-2 text-center">
+                The more colorful the plot is, the more activity taking place. On the right, Liquidity reacting to market is visualized. On the left, Liquidity Providers reacting to out of bounds Liquidity is visualized.
+            </p>
+            <div class="row">
+                <div class="col">
+                    <p>
+                        <ul>
+                            <li><strong>Floated into range</strong> means the market movement, moved liquidity into LP ranges by the day end.</li>
+                            <li><strong>Out of range</strong> means the liquidity didn't return back to its LP range</li>
+                        </ul>
+                    </p>
+                </div>
+                <div class="col">
+                    <p>
+                        <ul>
+                            <li><strong>Updated range</strong> implies LP stepped in to update price range</li>
+                            <li><strong>Reduced exposure</strong> implies LP stepped in to reduce liquidity within a certain price range</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="p-5">
     <div class="row">
-        <div class="col">
+        <div class="col-8">
             <div class="card">
                 <div class="card-header">
                     Slippage of past 7000 swaps
                 </div>
                 <div class="card-body">
                     {{slip_dict.div|safe}}
-                    
+
                 </div>
             </div>
         </div>
         <div class="col">
-            <p class="p-2">
-                75% of swaps under {{slip_dict.all75|safe}} slippage
-            </p>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            75% of swaps under
+                        </div>
+                        <div class="card-body">
+                            <strong>{{slip_dict.all75|safe}}</strong> slippage
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            Mean slippage
+                        </div>
+                        <div class="card-body">
+                            <strong>{{slip_dict.mean|safe}}</strong> 
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row pt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <p>
+                            In the <strong>histogram</strong> to the right, Ideally, you want to the distribution to be
+                            narrow for predictable slippage, and peak as close to zero as possible for minimum slippage.
+                            <br>
+                            In the <strong>heatmaps</strong> below , the darker the color, the more probably the
+                            slippage associated with it. The scale on the right shows the color coding of number of swaps in a given [slippage, price] range<br>
+                             First decide the swap amount (x-axis, bottom). Follow the
+                            column above to find the most likely slippage(on y-axis, left) based on past swap data. <br>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row p-2">
+    <div class="row py-3">
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Slippage 
-                </div>
-                <div class="card-body">
-                    <img src="{{url_for('static',filename='img/heatmaps/small.png')}}" class="img-fluid" alt="">
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Slippage 
-                </div>
-                <div class="card-body">
-                    <img src="{{url_for('static',filename='img/heatmaps/med.png')}}" class="img-fluid" alt="">
+                    Slippage - Swaps < $1,000 </div>
+                        <div class="card-body">
+                            <img src="{{url_for('static',filename='img/heatmaps/small.png')}}" class="img-fluid" alt="">
+                        </div>
                 </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Slippage 
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        Slippage - Swaps < $10,000 </div>
+                            <div class="card-body">
+                                <img src="{{url_for('static',filename='img/heatmaps/med.png')}}" class="img-fluid"
+                                    alt="">
+                            </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <img src="{{url_for('static',filename='img/heatmaps/big.png')}}" class="img-fluid" alt="">
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Slippage 
-                </div>
-                <div class="card-body">
-                    <img src="{{url_for('static',filename='img/heatmaps/whale.png')}}" class="img-fluid" alt="">
-                </div>
-            </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            Slippage - Swaps < $100,000 </div>
+                                <div class="card-body">
+                                    <img src="{{url_for('static',filename='img/heatmaps/big.png')}}" class="img-fluid"
+                                        alt="">
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                Whale boys
+                            </div>
+                            <div class="card-body">
+                                <img src="{{url_for('static',filename='img/heatmaps/whale.png')}}" class="img-fluid"
+                                    alt="">
+                            </div>
+                        </div>
 
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

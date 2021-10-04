@@ -14,7 +14,7 @@ from bokeh.resources import CDN
 from bokeh.embed import autoload_static
 
 
-from scripts.formatters import format_money
+from scripts.formatters import format_money,format_number
 from scripts.process_plot import get_div
 
 
@@ -43,8 +43,25 @@ def get_uni_vol():
 
     return df
 
+def get_swap_stats():
+    api = 'https://api.flipsidecrypto.com/api/v2/queries/96b859a6-8afd-4a54-a2ac-1bbb1d4a7f91/data/latest'
+    
+    response = requests.get(api)
+    out_dict = response.json()[0]
+
+    for key in out_dict.keys():
+        if key in ['OVERALL_SWAP_VOL','SWAP_VOL_TODAY']:
+            out_dict[key] = format_money(out_dict[key])
+        else :
+            out_dict[key] = format_number(out_dict[key])
+
+    return out_dict
+
+
 def get_uni_tvl_plot():
     uni_tvl_df = get_uni_tvl()
+
+    tvl_today = uni_tvl_df[uni_tvl_df['BLOCK_HOUR']==uni_tvl_df['BLOCK_HOUR'].max()].reset_index(drop=True)['TOTAL_LIQUIDITY_STR'][0]
 
     p = figure(x_axis_type='datetime',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
     p.varea(source=cds(uni_tvl_df),x='BLOCK_HOUR',y2='TOTAL_LIQUIDITY_USD',y1=0 ,fill_color='#fc077d',fill_alpha=0.7)
@@ -90,7 +107,7 @@ def get_uni_tvl_plot():
     p.yaxis.visible = False
     p.grid.visible = False
 
-    return get_div(p)
+    return get_div(p),tvl_today
 
 
 def get_uni_vol_plot():
@@ -138,8 +155,10 @@ def get_uni_vol_plot():
 
     return get_div(p)
 
-uni_tvl = get_uni_tvl_plot()
+uni_tvl,tvl_today = get_uni_tvl_plot()
 uni_vol = get_uni_vol_plot() 
+front_swap_stats = get_swap_stats()
+front_swap_stats['TVL_TODAY'] = tvl_today
 
 def get_uni_stat_plot():
-    return uni_tvl,uni_vol
+    return uni_tvl,uni_vol,front_swap_stats

@@ -24,6 +24,71 @@
 </div>
 
 <div class="container py-2">
+    <div class="row text-center">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Total Value Locked
+                </div>
+                <div class="card-body">
+                    <h3>
+                        {{front_swap_stats.TVL_TODAY|safe}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Overall Swap Volume
+                </div>
+                <div class="card-body">
+                    <h3>
+                        {{front_swap_stats.OVERALL_SWAP_VOL|safe}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Overall Swaps
+                </div>
+                <div class="card-body">
+                    <h3>
+                        {{front_swap_stats.OVERALL_NO_SWAPS|safe}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Swaps (24Hr)
+                </div>
+                <div class="card-body">
+                    <h3>
+                        {{front_swap_stats.NO_TX_TODAY|safe}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Swap Volume (24Hr)
+                </div>
+                <div class="card-body">
+                    <h3>
+                        {{front_swap_stats.SWAP_VOL_TODAY|safe}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-2">
     <div class="row">
         <div class="col">
             <div class="card">

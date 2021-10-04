@@ -346,3 +346,118 @@ def get_front():
             pass
 
     return uni_top_pool_json
+
+
+def get_fee_stuff(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d"), end_date=date.today()):
+
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    param_dict = get_page_stuff(pool_address)
+
+    global uni_pool_df
+    global uni_top_pool_df
+
+    cur_pool_df = uni_pool_df[uni_pool_df['POOL_ADDRESS']==pool_address][['DATE','TVL_USD','SWAP_VOL','DATE_STR']].reset_index(drop=True)
+    cur_pool_df = cur_pool_df[(cur_pool_df['DATE']>=start_date) & (cur_pool_df['DATE']<=end_date)]
+
+    fee = int(param_dict['pool_name'].split()[1])/(10000*100)
+
+    cur_pool_df['FEE']=cur_pool_df['SWAP_VOL']*fee
+    cur_pool_df['FEE_APR'] = cur_pool_df['FEE']/cur_pool_df['TVL_USD']
+    cur_pool_df['FEE_APR_STR'] = cur_pool_df['FEE_APR'].apply(format_apr_percent)
+    cur_pool_df['FEE_STR'] = cur_pool_df['FEE'].apply(format_money)
+
+    # Plotting APR plot
+    p = figure(x_axis_type='datetime',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p.varea(source=cds(cur_pool_df),x='DATE',y2='FEE_APR',y1=0 ,fill_color='#fc077d',fill_alpha=0.7)
+
+    line = p.line(source=cds(cur_pool_df),x='DATE',y='FEE_APR',line_color='#fc077d',line_width=2)
+    crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)
+    callback = CustomJS(args={'p': p}, code="""
+        var tooltips = document.getElementsByClassName("bk-tooltip");
+        const tw = 100;
+        for (var i = 0; i < tooltips.length; i++) {
+            tooltips[i].style.top = '10px'; 
+            tooltips[i].style.left = p.width/6 + 'px'; 
+            tooltips[i].style.width = tw + 'px'; 
+        } """)
+
+    tooltips = """
+        <div>
+        <h3> @FEE_APR_STR </h3>
+        <h7> @DATE_STR </h7>
+        </div>
+        """
+
+    hover = HoverTool(tooltips = tooltips ,callback=callback, mode='vline',renderers=[line])
+
+    hover.show_arrow = False
+    p.outline_line_color = None
+    p.add_tools(hover,crosshair)
+
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    p.yaxis.formatter=NumeralTickFormatter(format="00.00%")
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
+
+    apr_script,apr_div = components(p)
+    out_dict = {
+        'apr_div':apr_div,
+        'apr_script':apr_script
+    }
+
+    p = figure(x_axis_type='datetime',plot_height=300,sizing_mode="stretch_width",tools='xwheel_zoom,ywheel_zoom,xpan,reset')
+    p.varea(source=cds(cur_pool_df),x='DATE',y2='FEE',y1=0 ,fill_color='#fc077d',fill_alpha=0.7)
+
+    line = p.line(source=cds(cur_pool_df),x='DATE',y='FEE',line_color='#fc077d',line_width=2)
+
+
+    crosshair = CrosshairTool(dimensions='height',line_alpha=0.5)
+
+
+    callback = CustomJS(args={'p': p}, code="""
+        var tooltips = document.getElementsByClassName("bk-tooltip");
+        const tw = 100;
+        for (var i = 0; i < tooltips.length; i++) {
+            tooltips[i].style.top = '10px'; 
+            tooltips[i].style.left = p.width/6 + 'px'; 
+            tooltips[i].style.width = tw + 'px'; 
+        } """)
+
+    tooltips = """
+        <div>
+        <h3> @FEE_STR </h3>
+        <h7> @DATE_STR </h7>
+        </div>
+        """
+
+    hover = HoverTool(tooltips = tooltips ,callback=callback, mode='vline',renderers=[line])
+
+    hover.show_arrow = False
+    # p.outline_line_color = None
+    p.add_tools(hover,crosshair)
+
+    p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
+    p.yaxis.formatter=NumeralTickFormatter(format="$ 0.00 a")
+
+
+    p.yaxis.minor_tick_line_color = None
+    p.yaxis.major_tick_line_color = None
+    p.xaxis.minor_tick_line_color = None
+    p.xaxis.major_tick_line_color = None
+    p.xaxis.axis_line_color = None
+    p.yaxis.axis_line_color = None
+    p.grid.visible=False
+
+    fee_script,fee_div = components(p)
+    out_dict['fee_div'] = fee_div
+    out_dict['fee_script'] = fee_script
+
+    return out_dict
+
+

@@ -11,6 +11,11 @@ from bokeh.models import Range1d, Span
 from bokeh.embed import components
 from bokeh.plotting import figure
 
+import seaborn as sns; sns.set_theme()
+sns.set(rc={'figure.figsize':(8,8)})
+import matplotlib 
+matplotlib.use('agg')
+
 from io import StringIO
 import base64
 
@@ -109,8 +114,7 @@ def get_slip_heat(pool_address):
     swap_pool_df = swap_df[swap_df['POOL_ADDRESS']==pool_address].reset_index(drop=True)
     swap_pool_df = swap_pool_df[swap_pool_df['SLIPPAGE']>0]
 
-    import seaborn as sns; sns.set_theme()
-    sns.set(rc={'figure.figsize':(8,8)})
+
 
     amt = (swap_pool_df['SWAP_OUT_USD']+swap_pool_df['SWAP_OUT_USD'])/2
     amt.name='SWAP AMOUNT'

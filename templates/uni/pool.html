@@ -12,8 +12,6 @@
         color: white;
         background-color: #22316c;
     }
-
-
 </style>
 <link rel="stylesheet" href="{{url_for('static',filename='css/rio.css')}}">
 
@@ -45,23 +43,21 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js'
     type='text/javascript'></script>
 
-<div class="container">
-    <div class="row align-items-end">
-        <div class="col">Pick your date</div>
-        <div class="col">
-            <div class="form-outline">
-                <form action="/uni_pool/{{pool_address}}" method="POST">
-                    <div class="input-group input-daterange">
+<div class="row text-center align-items-end px-5">
+    <div class="col"></div>
+    <div class="col-3">Pick your date (Cards marked with * don't update) -> </div>
+    <div class="col-3">
+        <div class="form-outline text-center">
+            <form action="/uni_pool/{{pool_address}}" method="POST">
+                <div class="input-group input-daterange">
 
-                        <input type="text" class="form-control" value="{{start_date}}" name="start_date"
-                            id="start_date">
-                        <div class="input-group-addon">to</div>
-                        <input type="text" class="form-control" value="{{end_date}}" style='width: 100px;'
-                            name="end_date" id="end_date">
-                        <button class="btn btn-light" type="submit" value="set">Set</button>
-                    </div>
-                </form>
-            </div>
+                    <input type="text" class="form-control" value="{{start_date}}" name="start_date" id="start_date">
+                    <div class="input-group-addon py-1">to</div>
+                    <input type="text" class="form-control" value="{{end_date}}" style='width: 100px;' name="end_date"
+                        id="end_date">
+                    <button class="btn btn-light" type="submit" value="set">Set</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -121,7 +117,7 @@
                         <div class="col">
                             <div class="card text-center">
                                 <div class="card-header">
-                                    Overal Swap Volume
+                                    Overal Swap Vol *
                                 </div>
                                 <div class="card-body">
                                     <h4>
@@ -133,7 +129,7 @@
                         <div class="col">
                             <div class="card text-center">
                                 <div class="card-header">
-                                    Overall swap count
+                                    Overall swap count *
                                 </div>
                                 <div class="card-body">
                                     <h4>
@@ -154,7 +150,7 @@
         <div class="col">
             <div class="card h-100">
                 <div class="card-header">
-                    Overall Traded
+                    Overall Traded *
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -211,7 +207,8 @@
                     <div class="row">
                         <div class="col">
                             <div class="card text-center">
-                                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
+                                <div class="card-header"
+                                    style="color: white; background-color: {{param_dict.token0_color}};">
                                     1 {{param_dict.token0}}
                                 </div>
                                 <div class="card-body">
@@ -221,7 +218,8 @@
                         </div>
                         <div class="col">
                             <div class="card text-center">
-                                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
+                                <div class="card-header"
+                                    style="color: white; background-color: {{param_dict.token1_color}};">
                                     1 {{param_dict.token1}}
                                 </div>
                                 <div class="card-body">
@@ -230,7 +228,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -415,9 +413,34 @@
 </div>
 
 <div class="p-5">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Fees generated
+                </div>
+                <div class="card-body">
+                    {{fee_dict.fee_div|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    APR return
+                </div>
+                <div class="card-body">
+                    {{fee_dict.apr_div|safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-5">
     <div class="card">
         <div class="card-header">
-            Top 10 Liquidity Provider's positioning
+            Top 10 Liquidity Provider's positioning *
         </div>
         <div class="card-content">
             {{lp_range_div|safe}}
@@ -492,7 +515,7 @@
         <div class="col-8">
             <div class="card">
                 <div class="card-header">
-                    Slippage of past 7000 swaps
+                    Slippage of past 7000 swaps *
                 </div>
                 <div class="card-body">
                     {{slip_dict.div|safe}}
@@ -505,7 +528,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            75% of swaps under
+                            75% of swaps under *
                         </div>
                         <div class="card-body">
                             <strong>{{slip_dict.all75|safe}}</strong> slippage
@@ -515,7 +538,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            Mean slippage
+                            Mean slippage *
                         </div>
                         <div class="card-body">
                             <strong>{{slip_dict.mean|safe}}</strong>
@@ -546,7 +569,7 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Slippage - Swaps < $1,000 </div>
+                    Slippage - Swaps < $1,000 *</div>
                         <div class="card-body">
                             <img src="{{url_for('static',filename='img/heatmaps/small.png')}}" class="img-fluid" alt="">
                         </div>
@@ -555,7 +578,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        Slippage - Swaps < $10,000 </div>
+                        Slippage - Swaps < $10,000 *</div>
                             <div class="card-body">
                                 <img src="{{url_for('static',filename='img/heatmaps/med.png')}}" class="img-fluid"
                                     alt="">
@@ -565,7 +588,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            Slippage - Swaps < $100,000 </div>
+                            Slippage - Swaps < $100,000 *</div>
                                 <div class="card-body">
                                     <img src="{{url_for('static',filename='img/heatmaps/big.png')}}" class="img-fluid"
                                         alt="">
@@ -575,7 +598,7 @@
                     <div class="col">
                         <div class="card">
                             <div class="card-header">
-                                Whale boys
+                                Whale boys *
                             </div>
                             <div class="card-body">
                                 <img src="{{url_for('static',filename='img/heatmaps/whale.png')}}" class="img-fluid"
@@ -597,6 +620,8 @@
 
 {{lp_range_script|safe}}
 {{slip_dict.script|safe}}
+{{fee_dict.apr_script|safe}}
+{{fee_dict.fee_script|safe}}
 
 {% for plot in react_dict %}
 {{plot.script|safe}}

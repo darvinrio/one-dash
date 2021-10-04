@@ -13,3 +13,6 @@ def format_number(x):
 
 def format_fee_percent(x):
     return str(x)+"%"
+
+def format_apr_percent(x):
+    return str(round(x*100,3))+"%"

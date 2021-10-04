@@ -19,17 +19,77 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-light bg-light">
+  <nav class="navbar fixed-top navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="{{url_for('home')}}">
         <img src="{{url_for('static',filename='img/flipside.png')}}" alt="" width="30" height="30"
           class="d-inline-block align-text-top">
+        <img src="{{url_for('static',filename='img/uniswap-logo.png')}}" alt="" width="35" height="35"
+          class="d-inline-block align-text-top">
       </a>
+      <small>
+        Uniswap dashboard - powered by Flipside Crypto
+      </small>
     </div>
   </nav>
 
+  <div class="py-5">
+    <div class="py-4">
 
-  {% block body %}{% endblock %}
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+
+  <footer class="text-center text-lg-start bg-light text-muted">
+    <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+      <div class="me-5 d-none d-lg-block">
+        <span>Built by <strong>maybeYonas</strong> </span>
+      </div>
+      <!-- Left -->
+      <div>
+        wana tip me > | 
+        Terra - <strong>terra1jse8nzxu5uf9tq5m4rw9v0hhqcfutahay6zj74</strong>  | 
+        Ethereum L1 and L2 - <strong>0x364F7Fd945B8c76C3C77d6ac253f1fEa3B65E00d</strong> 
+      </div>
+      <!-- Right -->
+      <div>
+        get in touch > | 
+        <a href="https://twitter.com/maybeYonas" class="me-4 text-reset">
+          <i class="fab fa-twitter"></i>
+          maybeYonas
+        </a>
+        |
+        <a class="me-4 text-reset">
+          <i class="fab fa-discord"></i>
+          maybeYonas#7121
+        </a>
+      </div>
+    </section>
+
+    <section class="p-4">
+      <div class="row text-center">
+        <div class="col">
+          <a href="https://www.flipsidecrypto.com/">
+            Data from : <strong>Flipside Crypto <img src="{{url_for('static',filename='img/flipside.png')}}" alt=""
+                width="20" height="20" class="d-inline-block align-text-top"> : Uniswapv3 Tables</strong>
+          </a>
+          |
+          <a href="https://discord.gg/MSThjHWQ"><i class="fab fa-discord"></i>
+            Join FlipsideCrypto discord</a>
+        </div>
+        <div class="col">
+          <a href="https://mdbootstrap.com/">
+            CSS theme + JS from - <strong>mdBootstrap</strong>
+            <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="20" alt=""
+              loading="lazy" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+  </footer>
+
 </body>
 
 </html>

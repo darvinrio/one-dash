@@ -125,6 +125,51 @@
 </div>
 
 <div class="p-5">
+    <div class="row text-center">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Overall swaps
+                </div>
+                <div class="card-body">
+                    {{overall_swap_dict.swaps}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Overall Swap Volume
+                </div>
+                <div class="card-body">
+                    {{overall_swap_dict.total_vol}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header"style="color: white; background-color: {{param_dict.token0_color}};">
+                    Overall {{param_dict.token0}} traded
+                </div>
+                <div class="card-body">
+                    {{overall_swap_dict.token0_traded}}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header"style="color: white; background-color: {{param_dict.token1_color}};">
+                    Overall {{param_dict.token1}} traded
+                </div>
+                <div class="card-body">
+                    {{overall_swap_dict.token1_traded}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-5">
     <div class="row">
         <div class="col">
             <div class="card text-center">
@@ -250,10 +295,6 @@
     </div>
 
 </div>
-
-
-
-
 
 <div class="p-5">
     <div class="row">

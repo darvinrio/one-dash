@@ -25,7 +25,7 @@ from scripts.uniswap.fees import get_uni_fee_plots
 from scripts.uniswap.lp import get_uni_lp_plot
 from scripts.uniswap.lp_react import get_lp_react_plots
 
-from scripts.swap import get_slip_hist,get_slip_heat
+from scripts.swap import get_slip_hist,get_slip_heat,get_overall_dict
 from scripts.pool import get_page,get_front,get_page_stuff,get_lp_range, get_lp_react
 
 # from scripts.test2 import get_comps
@@ -83,6 +83,7 @@ def pool(pool_address):
     react_dict = get_lp_react(pool_address,start_date=start_date,end_date=end_date)
     slip_dict = get_slip_hist(pool_address)
     get_slip_heat(pool_address)
+    overall_swap_dict = get_overall_dict(pool_address)
 
     return render_template('uni/pool.html',
             lp_range_script=lp_range_script, 
@@ -93,12 +94,17 @@ def pool(pool_address):
             param_list=param_list,
             param_dict=param_dict,
             react_dict=react_dict,
-            slip_dict=slip_dict)
+            slip_dict=slip_dict,
+            overall_swap_dict=overall_swap_dict)
 
 @app.route('/test')
 def test():
     script,div = get_comps()
     return render_template('test.html',script=script,div=div)
+
+@app.errorhandler(404)
+def error404(e):
+    render_template('404.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

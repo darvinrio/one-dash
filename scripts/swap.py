@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np 
 import requests
 from datetime import datetime as dt
+import json
 
 from bokeh.models import ColumnDataSource as cds
 from bokeh.models import HoverTool,CrosshairTool
@@ -42,7 +43,16 @@ def get_swaps():
     df = pd.DataFrame(response.json())
     return df 
 
+def get_overall():
+    api='https://api.flipsidecrypto.com/api/v2/queries/fa6bf149-b451-4f10-a098-94727f454e7b/data/latest'
+
+    response = requests.get(api)
+    print('Retrieved data')
+    df = pd.DataFrame(response.json())
+    return df 
+
 swap_df = get_swaps()
+overall_df = get_overall()
 
 def get_slip_hist(pool_address):
     swap_pool_df = swap_df[swap_df['POOL_ADDRESS']==pool_address].reset_index(drop=True)
@@ -138,3 +148,18 @@ def get_slip_heat(pool_address):
     plot_whale.figure.savefig('static/img/heatmaps/whale.png',bbox_inches = 'tight')
     plot_whale.figure.clf()
 
+def get_overall_dict(pool_address):
+
+    t_df = overall_df[overall_df['POOL_ADDRESS']==pool_address]
+
+    result = t_df.to_json(orient="records")
+    t_df = json.loads(result)[0]
+
+    param_dict={
+        "swaps":t_df['NO_SWAPS'],
+        'token0_traded':t_df['TOKEN0_TRADED'],
+        'token1_traded':t_df['TOKEN1_TRADED'],
+        'total_vol':t_df['TOTAL_SWAP_VOL']
+    }
+
+    return param_dict

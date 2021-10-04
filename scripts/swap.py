@@ -14,6 +14,8 @@ from bokeh.plotting import figure
 from io import StringIO
 import base64
 
+from scripts.formatters import format_money,format_number
+
 def truncate_small_amt(x):
     return round(x,-2)
 
@@ -156,10 +158,10 @@ def get_overall_dict(pool_address):
     t_df = json.loads(result)[0]
 
     param_dict={
-        "swaps":t_df['NO_SWAPS'],
-        'token0_traded':t_df['TOKEN0_TRADED'],
-        'token1_traded':t_df['TOKEN1_TRADED'],
-        'total_vol':t_df['TOTAL_SWAP_VOL']
+        "swaps":format_number(t_df['NO_SWAPS']),
+        'token0_traded':format_number(t_df['TOKEN0_TRADED']),
+        'token1_traded':format_number(t_df['TOKEN1_TRADED']),
+        'total_vol':format_money(t_df['TOTAL_SWAP_VOL'])
     }
 
     return param_dict

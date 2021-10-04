@@ -12,6 +12,8 @@
         color: white;
         background-color: #22316c;
     }
+
+
 </style>
 <link rel="stylesheet" href="{{url_for('static',filename='css/rio.css')}}">
 
@@ -64,12 +66,11 @@
     </div>
 </div>
 
-
 <div class="p-5">
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col">
+                <div class="col-3">
                     <h1 class="display-5">
                         {{param_dict.pool_name}}
                     </h1>
@@ -79,8 +80,8 @@
                     <img src="{{url_for('static',filename=param_dict.token0_icon)}}" width="100">
                     <img src="{{url_for('static',filename=param_dict.token1_icon)}}" width="100">
                 </div>
-                <div id="24hr_stats" class="col">
-                    <div class="row">
+                <div id="24hr_stats" class="col ">
+                    <div class="row d-flex align-items-center justify-content-center">
                         <div class="col">
                             <div class="card text-center">
                                 <div class="card-header">
@@ -96,7 +97,7 @@
                         <div class="col">
                             <div class="card text-center">
                                 <div class="card-header">
-                                    Swap Volume
+                                    Swap Volume (24Hr)
                                 </div>
                                 <div class="card-body">
                                     <h4>
@@ -108,11 +109,35 @@
                         <div class="col">
                             <div class="card text-center">
                                 <div class="card-header">
-                                    Swaps made
+                                    Swaps made (24Hr)
                                 </div>
                                 <div class="card-body">
                                     <h4>
                                         {{param_list[4].div|safe}}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Overal Swap Volume
+                                </div>
+                                <div class="card-body">
+                                    <h4>
+                                        {{overall_swap_dict.total_vol|safe}}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Overall swap count
+                                </div>
+                                <div class="card-body">
+                                    <h4>
+                                        {{overall_swap_dict.swaps|safe}}
                                     </h4>
                                 </div>
                             </div>
@@ -124,136 +149,139 @@
     </div>
 </div>
 
-<div class="p-5">
-    <div class="row text-center">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Overall swaps
-                </div>
-                <div class="card-body">
-                    {{overall_swap_dict.swaps}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Overall Swap Volume
-                </div>
-                <div class="card-body">
-                    {{overall_swap_dict.total_vol}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header"style="color: white; background-color: {{param_dict.token0_color}};">
-                    Overall {{param_dict.token0}} traded
-                </div>
-                <div class="card-body">
-                    {{overall_swap_dict.token0_traded}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-header"style="color: white; background-color: {{param_dict.token1_color}};">
-                    Overall {{param_dict.token1}} traded
-                </div>
-                <div class="card-body">
-                    {{overall_swap_dict.token1_traded}}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="p-5">
+<div class="p-5 text-center">
     <div class="row">
         <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
-                    {{param_dict.token0}} in Pool
+            <div class="card h-100">
+                <div class="card-header">
+                    Overall Traded
                 </div>
                 <div class="card-body">
-                    {{param_list[0].div|safe}}
+                    <div class="row">
+                        <div class="col">
+                            <div class="card" style="color:white;  background-color: {{param_dict.token0_color}};">
+                                <div class="card-body">
+                                    <h4>{{overall_swap_dict.token0_traded}}</h4>{{param_dict.token0}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card" style="color:white;  background-color: {{param_dict.token1_color}};">
+                                <div class="card-body">
+                                    <h4>{{overall_swap_dict.token1_traded}}</h4>{{param_dict.token1}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                    {{param_dict.token1}} in Pool
+            <div class="card h-100">
+                <div class="card-header">
+                    Tokens in Pool
                 </div>
                 <div class="card-body">
-                    {{param_list[1].div|safe}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
-                    swap in 1 {{param_dict.token0}} for
-                </div>
-                <div class="card-body">
-                    {{param_list[3].div|safe}} {{param_dict.token1}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                    swap in 1 {{param_dict.token1}} for
-                </div>
-                <div class="card-body">
-                    {{param_list[2].div|safe}} {{param_dict.token0}}
+                    <div class="row">
+                        <div class="col">
+                            <div class="card" style="color:white; background-color: {{param_dict.token0_color}};">
+                                <div class="card-body">
+                                    <h4>{{param_list[0].div|safe}}</h4> {{param_dict.token0}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card" style="color:white; background-color: {{param_dict.token1_color}};">
+                                <div class="card-body">
+                                    <h4>{{param_list[1].div|safe}}</h4>{{param_dict.token1}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-    </div>
-</div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    Exchange rate
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
+                                    1 {{param_dict.token0}}
+                                </div>
+                                <div class="card-body">
+                                    {{param_list[3].div|safe}} {{param_dict.token1}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card text-center">
+                                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
+                                    1 {{param_dict.token1}}
+                                </div>
+                                <div class="card-body">
+                                    {{param_list[2].div|safe}} {{param_dict.token0}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
 
-<div class="p-5">
-    <div class="row">
         <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
-                    {{param_dict.token0}} swapped in
+            <div class="card h-100">
+                <div class="card-header">
+                    Swapped in (24Hr)
                 </div>
                 <div class="card-body">
-                    {{param_list[6].div|safe}}
+                    <div class="row">
+                        <div class="col">
+                            <div class="card" style="color:white; background-color: {{param_dict.token0_color}};">
+                                <div class="card-body">
+                                    <h4>{{param_list[6].div|safe}}</h4>{{param_dict.token0}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card" style="color:white; background-color: {{param_dict.token1_color}};">
+                                <div class="card-body">
+                                    <h4>{{param_list[8].div|safe}}</h4>{{param_dict.token1}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                    {{param_dict.token1}} swapped in
+            <div class="card h-100">
+                <div class="card-header">
+                    Swapped out (24Hr)
                 </div>
                 <div class="card-body">
-                    {{param_list[8].div|safe}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token0_color}};">
-                    {{param_dict.token0}} swapped out
-                </div>
-                <div class="card-body">
-                    {{param_list[7].div|safe}}
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style="color: white; background-color: {{param_dict.token1_color}};">
-                    {{param_dict.token1}} swapped out
-                </div>
-                <div class="card-body">
-                    {{param_list[9].div|safe}}
+                    <div class="row">
+                        <div class="col">
+                            <div class="card" style="color:white; background-color: {{param_dict.token0_color}};">
+                                <div class="card-body">
+                                    <h4>{{param_list[7].div|safe}}</h4>{{param_dict.token0}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card" style="color:white; background-color: {{param_dict.token1_color}};">
+                                <div class="card-body">
+                                    <h4>{{param_list[9].div|safe}}</h4>{{param_dict.token1}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -394,7 +422,9 @@
         <div class="card-content">
             {{lp_range_div|safe}}
             <p class="text-center pt-2">
-                The price range of one asset and the Liquidity concentration of the other asset provided by the Top10 most active LPs is visualized. Anomalies cause massive deviations. But the general picture of liquidity concentration can be seen.
+                The price range of one asset and the Liquidity concentration of the other asset provided by the Top10
+                most active LPs is visualized. Anomalies cause massive deviations. But the general picture of liquidity
+                concentration can be seen.
             </p>
         </div>
     </div>
@@ -429,23 +459,27 @@
                 <div class="col text-center text-white" style="background-color:black;">other</div>
             </nav>
             <p class="pt-2 text-center">
-                The more colorful the plot is, the more activity taking place. On the right, Liquidity reacting to market is visualized. On the left, Liquidity Providers reacting to out of bounds Liquidity is visualized.
+                The more colorful the plot is, the more activity taking place. On the right, Liquidity reacting to
+                market is visualized. On the left, Liquidity Providers reacting to out of bounds Liquidity is
+                visualized.
             </p>
             <div class="row">
                 <div class="col">
                     <p>
-                        <ul>
-                            <li><strong>Floated into range</strong> means the market movement, moved liquidity into LP ranges by the day end.</li>
-                            <li><strong>Out of range</strong> means the liquidity didn't return back to its LP range</li>
-                        </ul>
+                    <ul>
+                        <li><strong>Floated into range</strong> means the market movement, moved liquidity into LP
+                            ranges by the day end.</li>
+                        <li><strong>Out of range</strong> means the liquidity didn't return back to its LP range</li>
+                    </ul>
                     </p>
                 </div>
                 <div class="col">
                     <p>
-                        <ul>
-                            <li><strong>Updated range</strong> implies LP stepped in to update price range</li>
-                            <li><strong>Reduced exposure</strong> implies LP stepped in to reduce liquidity within a certain price range</li>
-                        </ul>
+                    <ul>
+                        <li><strong>Updated range</strong> implies LP stepped in to update price range</li>
+                        <li><strong>Reduced exposure</strong> implies LP stepped in to reduce liquidity within a certain
+                            price range</li>
+                    </ul>
                     </p>
                 </div>
             </div>
@@ -484,11 +518,11 @@
                             Mean slippage
                         </div>
                         <div class="card-body">
-                            <strong>{{slip_dict.mean|safe}}</strong> 
+                            <strong>{{slip_dict.mean|safe}}</strong>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="row pt-3">
                 <div class="card">
@@ -498,8 +532,9 @@
                             narrow for predictable slippage, and peak as close to zero as possible for minimum slippage.
                             <br>
                             In the <strong>heatmaps</strong> below , the darker the color, the more probably the
-                            slippage associated with it. The scale on the right shows the color coding of number of swaps in a given [slippage, price] range<br>
-                             First decide the swap amount (x-axis, bottom). Follow the
+                            slippage associated with it. The scale on the right shows the color coding of number of
+                            swaps in a given [slippage, price] range<br>
+                            First decide the swap amount (x-axis, bottom). Follow the
                             column above to find the most likely slippage(on y-axis, left) based on past swap data. <br>
                         </p>
                     </div>

@@ -19,19 +19,47 @@
 </head>
 
 <body>
-  <nav class="navbar fixed-top navbar-light bg-light">
-    <div class="container-fluid">
+
+  <!-- Navbar -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+  <!-- Container wrapper -->
+  <div class="container-fluid">
+    <!-- Toggle button -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-mdb-toggle="collapse"
+      data-mdb-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <a class="navbar-brand" href="{{url_for('home')}}">
         <img src="{{url_for('static',filename='img/flipside.png')}}" alt="" width="30" height="30"
           class="d-inline-block align-text-top">
         <img src="{{url_for('static',filename='img/uniswap-logo.png')}}" alt="" width="35" height="35"
           class="d-inline-block align-text-top">
       </a>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('docs')}}">Docs</a>
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex align-items-center">
       <small>
         Uniswap dashboard - powered by Flipside Crypto
       </small>
     </div>
-  </nav>
+  </div>
+</nav>
+
+
+
 
   <div class="py-5">
     <div class="py-4">

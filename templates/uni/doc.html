@@ -3,13 +3,54 @@
 {% block head %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/prism.css')}}">
 <script src="{{url_for('static',filename='js/prism.js')}}"></script>
+<title> Docs </title>
+
 {% endblock %}
 
 {% block body %}
 
-<section class="container">
-  <h3 class="display">Queries</h3>
- 
+<section class="container py-3">
+  <h3 class="display-5">Intro</h3>
+  The Uniswap v3 Dashboard can be used in order to get general analysis on the Top 10 Pools in uniswap v3. The home page is just a general overlook of the Statistics and a few important analysis any Uniswap v3 user might require. It is the pool's page where most of the information is available. These can be used to get a quick look into a certain pool, while also providing info into intermediate metrics like Slippage, and liquidity activity. 
+  <br>
+  Special Thanks to AD#5391 for helping me build the UI. The multipool format was their suggestion.
+</section>
+
+<section class="container py-3">
+  <h3 class="display-5">Data</h3>
+  This dashboard wouldn't be possible if it wasn't for the efforts of the Data Provider Flipside Crypto's consistent curated blockchain data. They run bounties every week for crypto analytics, and this dash was built for one of those prompts. Such an incentivized mechanism means, there are a lot of upcoming talented analysts who have provided insights into Blockchain tech and Uniswap v3 in our case. As these are open source, they allow others to fork and enhance these. <br>
+  Queries stated below are updated every hour to get information from the FlipsideData base which is then processed by python to produce this dash.
+  So here are the analysts who made the my favourite insights into the protocol.
+  <ul>
+    <li><strong>Kida#8864</strong> whose analysis on LP efficiency was the first inspiration behind the entire Dash. I believe I have done justice to the data you provided for USDC-WETH pair.</li>
+    <li><strong>Andruu</strong> whose Liquidity and Liquidity Provider activity analysis that inspired me to switch to a multi pool dashboard, cause the information provided by their graphs were of high quality and had to be broken down into seperate pools for easier consumption.</li>
+    <li><strong>darksoulsfanlol</strong> whose Fee tier analysis debunks the notion that <em> more fees , more APR</em></li>
+  </ul>
+  ps: it turned out Kida and darksoulsfanlol are the same person, so yay to them !! <br>
+  If it isn't obvious, the rest was done by maybeYonas. <br>
+  While Flipside Data isn't real time updated data, it is very useful for historical analysis. Moreover API data bottlenecks meant , it will be a while before more pools are included in this dashboard. Also there are anomalies in the data itself as the curation process in Flipside is still at a very early stage. As the data gets refined better , these anomalies should be weeded out.
+</section>
+
+<section class="container py-3">
+  <h3 class="display-5">
+    Tips
+  </h3>
+  <p>
+    Amidst the overwhelming amount of graphs , usually you will only need few of them to make decisions. A few examples I could think off are : 
+    <ul>
+      <li>Pair the <strong>Reserves and Exchange rate</strong> charts. While Reserves usually dry up as Exchange rate hits the roof, you could see if more Liquidity flows into the pool as a result of increase in a token price</li>
+      <li>Compare <strong>Swap-in and Swap-out</strong> charts to see for market preference. Somedays people might want ETH , other days USDC.</li>
+      <li>Compare <strong>Positioning and Activity of Liquidity</strong> graphs to understand the workload of a LP. As moving out of range means, complete loss of price action, LP need to be active. Active LPs are rewarded with fees. </li>
+      <li>Compare <strong>slippage heat maps</strong> to plan on how to break up your big transaction. There are aggregators that do this for you, but heatmaps suggest in most cases, you don't have to. MEV's are a problem though. </li>
+    </ul>
+  </p>
+</section>
+
+<section class="container py-3">
+  <h3 class="display-5">Queries</h3>
+ <p>
+   These are in essence all the queries used to build this Dash. Those marked with * are extremely long and complicated queries, which I recommend copy pasting in Flipside querying to get a better look. <strong>Copy</strong> button is provided at the top right corner of every code block.(Hover to unhide)
+ </p>
   <div class="accordion" id="accordionExample">
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingOne">
@@ -1357,6 +1398,852 @@ on a.blk_date = b.blk_date
 -- ,num_active_lps_in_range/total_num_active_lps as pct_active_lps_in_range
 -- ,num_active_lps_out_of_range/total_num_active_lps as pct_active_lps_out_of_range
             
+          </code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading12">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#collapse12"
+          aria-expanded="false"
+          aria-controls="collapse12"
+        >
+          Pool Daily Stats
+        </button>
+      </h2>
+      <div
+        id="collapse12"
+        class="accordion-collapse collapse"
+        aria-labelledby="heading12"
+        data-mdb-parent="#accordionExample"
+      >
+        <div class="accordion-body">
+          <pre><code class="language-sql">
+WITH hourly as (
+  SELECT
+    DISTINCT date_trunc('day',pstat.block_timestamp) as block_hour,
+    pstat.pool_address,
+    pool_name,
+    
+    last_value(price_0_1) OVER (partition by block_hour, pool_address, pool_name order by block_timestamp) as price01,
+    last_value(price_1_0) OVER (partition by block_hour, pool_address, pool_name order by block_timestamp) as price10,
+    
+    last_value(tph0.price) OVER (PARTITION BY block_hour, pool_address, pool_name ORDER BY block_timestamp) as price0,
+    last_value(tph1.price) OVER (PARTITION BY block_hour, pool_address, pool_name ORDER BY block_timestamp) as  price1,
+    
+    last_value(token0_balance_adjusted) OVER (PARTITION BY block_hour, pool_address, pool_name ORDER BY block_timestamp) as gross_reserves_token0_adjusted,
+    last_value(token1_balance_adjusted) OVER (PARTITION BY block_hour, pool_address, pool_name ORDER BY block_timestamp) as gross_reserves_token1_adjusted,
+    
+    price0 * gross_reserves_token0_adjusted as token0_gross_usd,
+    price1 * gross_reserves_token1_adjusted as token1_gross_usd,
+  
+    CASE WHEN price0 IS NULL and price1 IS NULL THEN 'no prices' 
+          WHEN price0 IS NULL and price1 IS NOT NULL THEN 'price1' 
+          WHEN price1 IS NULL and price0 IS NOT NULL THEN 'price0' 
+          ELSE 'both prices' 
+    END AS price_status
+    FROM uniswapv3.pool_stats pstat
+    
+    LEFT JOIN ethereum.token_prices_hourly tph0 
+      ON tph0.hour = date_trunc('day',pstat.block_timestamp) 
+      AND pstat.token0_address = tph0.token_address
+    
+    LEFT JOIN ethereum.token_prices_hourly tph1 
+      ON tph1.hour = date_trunc('day',pstat.block_timestamp) 
+      AND pstat.token1_address = tph1.token_address
+    
+  -- WHERE pstat.block_timestamp >= getdate() - interval '7 days' 
+  ORDER BY block_hour DESC, pstat.pool_address
+  ),
+  gussied as (
+    SELECT
+      block_hour, 
+      pool_address,
+      pool_name, 
+      price_status,
+      CASE 
+        WHEN price_status = 'both prices' THEN token0_gross_usd + token1_gross_usd
+        when price_status = 'price1' then token1_gross_usd + ((gross_reserves_token0_adjusted * price10) * price1)
+        when price_status = 'price0' then token0_gross_usd + ((gross_reserves_token1_adjusted * price01) * price0)
+        ELSE NULL 
+        END AS tvl_usd,
+    gross_reserves_token0_adjusted,
+    gross_reserves_token1_adjusted,
+    price10,
+    price01
+    FROM hourly
+    WHERE price_status <> 'no prices'
+  ),
+  swap_vol as (
+    select 
+      date(block_timestamp) as date,
+      pool_address,
+      pool_name,
+      sum(abs(amount0_usd)+abs(amount1_usd))/2 as swap_vol,
+      count(tx_id) as swap_count,
+      sum(case when amount0_adjusted>0 then amount0_adjusted else 0 end) as token0_in,
+      -sum(case when amount0_adjusted<0 then amount0_adjusted else 0 end) as token0_out,
+      sum(case when amount0_adjusted<0 then amount1_adjusted else 0 end) as token1_in,
+      -sum(case when amount0_adjusted>0 then amount1_adjusted else 0 end) as token1_out
+    
+    from uniswapv3.swaps
+    group by date(block_timestamp),pool_address,pool_name
+  ),
+  top10_pools as(
+    SELECT 
+      st.block_timestamp as date,
+    st.pool_name,
+    (st.token0_balance_usd + st.token1_balance_usd) as total_bal,
+    st.pool_address
+    FROM uniswapv3.pool_stats st
+      
+    INNER JOIN (
+      SELECT MAX(p1.block_timestamp) as maxDate, p1.pool_address
+      FROM uniswapv3.pool_stats p1
+      GROUP BY p1.pool_address
+    ) p2 ON st.pool_address = p2.pool_address AND st.block_timestamp= p2.maxDate
+    
+    WHERE total_bal IS NOT NULL
+      and st.pool_address != '0xcdb4e35b235845ae8d0c27f77cd8176ddfc26965'
+    
+    ORDER BY total_bal DESC 
+    
+    LIMIT 10
+  )
+  
+  -- select * from swap_vol
+  --   where pool_address in (select pool_address from top10_pools)
+  -- limit 100
+  
+  select 
+    s.date,
+    s.pool_address,
+    s.pool_name,
+    s.swap_vol,
+    s.swap_count,
+    g.tvl_usd,
+    g.gross_reserves_token0_adjusted,
+    g.gross_reserves_token1_adjusted,
+    g.price10,
+    g.price01,
+    token0_in,
+    token0_out,
+    token1_in,
+    token1_out
+  from swap_vol s join gussied g on 
+    s.date=g.block_hour
+    and s.pool_address = g.pool_address
+  where s.pool_address in (select pool_address from top10_pools)
+  
+              
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading13">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#collapse13"
+          aria-expanded="false"
+          aria-controls="collapse13"
+        >
+        Pool LP activity * 
+      </button>
+      </h2>
+      <div
+        id="collapse13"
+        class="accordion-collapse collapse"
+        aria-labelledby="heading13"
+        data-mdb-parent="#accordionExample"
+      >
+        <div class="accordion-body">
+          <pre><code class="language-sql">
+WITH positions AS (
+  SELECT *
+  FROM uniswapv3.positions
+),
+top10_pools as(
+  SELECT 
+    st.block_timestamp as date,
+  st.pool_name,
+  st.token0_symbol,
+  st.token1_symbol,
+  st.token0_address,
+  st.token1_address,
+  st.pool_address,
+  (st.token0_balance_usd + st.token1_balance_usd) as total_bal
+  FROM uniswapv3.pool_stats st
+    
+  INNER JOIN (
+    SELECT MAX(p1.block_timestamp) as maxDate, p1.pool_address
+    FROM uniswapv3.pool_stats p1
+    GROUP BY p1.pool_address
+  ) p2 ON st.pool_address = p2.pool_address AND st.block_timestamp= (p2.maxDate)
+  
+  WHERE total_bal IS NOT NULL
+    and st.pool_address != '0xcdb4e35b235845ae8d0c27f77cd8176ddfc26965'
+  
+  ORDER BY total_bal DESC 
+  
+  LIMIT 10
+),                        
+max_blocks AS (
+  SELECT min(block_id) AS min_block_id,
+    max(block_id) AS max_block_id,
+    pool_address,
+    liquidity_provider,
+    nf_token_id,
+    date_trunc('day', block_timestamp) AS blk_date
+  FROM positions
+  GROUP BY pool_address,
+    liquidity_provider,
+    nf_token_id,
+    blk_date
+),
+max_blocks_prices AS (
+  SELECT max(block_id) AS max_block_id,
+    min(block_id) AS min_block_id,
+    pool_address,
+    date_trunc('day', block_timestamp) AS blk_date
+  FROM uniswapv3.pool_stats
+  GROUP BY pool_address,
+    blk_date
+),
+current_positions_by_day AS (
+  SELECT p.pool_address,
+    p.pool_name,
+    p.nf_token_id,
+    p.liquidity_provider,
+    p.price_lower_1_0,
+    p.price_upper_1_0,
+    p.blk_date,
+    case
+      when p.block_id = mb.max_block_id then p.liquidity_adjusted
+      else 0
+    end as max_liquidity_adjusted,
+    case
+      when p.block_id = mb_min.min_block_id then p.liquidity_adjusted
+      else 0
+    end as min_liquidity_adjusted
+  FROM (
+      select *,
+        date_trunc('day', block_timestamp) AS blk_date
+      from positions
+    ) p
+    left JOIN max_blocks mb ON mb.blk_date = p.blk_date
+    AND mb.max_block_id = p.block_id
+    AND mb.pool_address = p.pool_address
+    AND mb.liquidity_provider = p.liquidity_provider
+    AND mb.nf_token_id = p.nf_token_id
+    left JOIN max_blocks mb_min ON mb_min.blk_date = p.blk_date
+    AND mb_min.min_block_id = p.block_id
+    AND mb_min.pool_address = p.pool_address
+    AND mb_min.liquidity_provider = p.liquidity_provider
+    AND mb_min.nf_token_id = p.nf_token_id
+  WHERE liquidity_adjusted > 0
+    and (
+      max_liquidity_adjusted > 0
+      or min_liquidity_adjusted > 0
+    ) -- and pool_name = 'USDC-WETH 3000 60'
+),
+current_prices_by_day AS (
+  SELECT p.pool_address,
+    p.pool_name,
+    p.blk_date,
+    case
+      when p.block_id = mb.max_block_id then p.price_1_0
+      else 0
+    end as max_price_1_0,
+    case
+      when p.block_id = mb_min.min_block_id then p.price_1_0
+      else 0
+    end as min_price_1_0
+  FROM (
+      select *,
+        date_trunc('day', block_timestamp) AS blk_date
+      from uniswapv3.pool_stats
+    ) p
+    left JOIN max_blocks_prices mb ON mb.blk_date = p.blk_date
+    AND mb.max_block_id = p.block_id
+    AND mb.pool_address = p.pool_address
+    left JOIN max_blocks_prices mb_min ON mb_min.blk_date = p.blk_date
+    AND mb_min.min_block_id = p.block_id
+    AND mb_min.pool_address = p.pool_address
+  WHERE (
+      max_price_1_0 > 0
+      or min_price_1_0 > 0
+    )
+),
+big5 as (
+  select tbl.*,
+    row_number() over (
+      order by tbl.tvl DESC
+    ) as rn
+  from (
+      SELECT pool_address,
+        pool_name,
+        --tick,
+        case
+          when token0_symbol in ('USDC', 'USDT', 'DAI', 'FEI', 'FRAX')
+          and token1_symbol in ('USDC', 'USDT', 'DAI', 'FEI', 'FRAX') then '_stable_stable_'
+          when token0_symbol in ('USDC', 'USDT', 'DAI', 'FEI', 'FRAX')
+          or token1_symbol in ('USDC', 'USDT', 'DAI', 'FEI', 'FRAX') then '_stable_other_'
+          else '_other_other_'
+        end as pairing_type,
+        to_date(block_timestamp) as block_day,
+        avg(token0_balance_usd + token1_balance_usd) as tvl,
+        avg(virtual_liquidity_adjusted) as virtual_liquidity_adjusted,
+        avg(
+          virtual_reserves_token0_adjusted + virtual_reserves_token1_adjusted
+        ) as vitrul_reserves_split
+      FROM uniswapv3.pool_stats
+      WHERE block_day = CURRENT_DATE() -1
+        -- and pairing_type = '_stable_stable_'
+        and (token0_balance_usd + token1_balance_usd) is not NULL
+      group by 1,
+        2,
+        3,
+        4
+      order by tvl DESC
+    ) tbl QUALIFY rn <= 20
+),
+response as (
+  select pool.pool_name,
+    pool.blk_date,
+    pool.liquidity_provider --, pool.price_lower_1_0, pool.price_upper_1_0
+,
+case
+      when price_lower_1_0 <= max_price_1_0
+      and price_upper_1_0 >= max_price_1_0 then '_in_range_'
+      else '_out_of_range_'
+    end as current_liquidity_state_max,
+case
+      when price_lower_1_0 <= min_price_1_0
+      and price_upper_1_0 >= min_price_1_0 then '_in_range_'
+      else '_out_of_range_'
+    end as current_liquidity_state_min,
+    avg(pool.price_lower_1_0) as avg_price_lower_1_0,
+    avg(pool.price_upper_1_0) as avg_price_upper_1_0,
+    avg(max_price_1_0) as max_price_1_0,
+    avg(min_price_1_0) as min_price_1_0,
+    sum(zeroifnull(pool.max_liquidity_adjusted)) as max_liquidity_adjusted,
+    sum(zeroifnull(pool.min_liquidity_adjusted)) as min_liquidity_adjusted,
+    sum(zeroifnull(inc_dec.token_increases)) as token_increases,
+    sum(zeroifnull(inc_dec.token_decrease)) as token_decrease
+  FROM current_positions_by_day pool
+    inner join big5 F on pool.pool_address = f.pool_address
+    left JOIN current_prices_by_day price on pool.pool_address = price.pool_address
+    and pool.blk_date = price.blk_date
+    left join (
+      select pool_address,
+        date_trunc('day', block_timestamp) AS blk_date,
+        liquidity_provider,
+        nf_token_id,
+        sum(
+          case
+            when action = 'INCREASE_LIQUIDITY' then 1
+            else 0
+          end
+        ) as token_increases,
+        sum(
+          case
+            when action = 'DECREASE_LIQUIDITY' then 1
+            else 0
+          end
+        ) as token_decrease
+      from uniswapv3.lp_actions
+      group by 1,
+        2,
+        3,
+        4
+    ) inc_dec on pool.pool_address = inc_dec.pool_address
+    and pool.blk_date = inc_dec.blk_date
+    and pool.liquidity_provider = inc_dec.liquidity_provider
+    and pool.nf_token_id = inc_dec.nf_token_id -- where
+  group by 1,
+    2,
+    3,
+    4,
+    5
+),
+movement as (
+  select blk_date,
+    liquidity_provider,
+    pool_name,
+    current_liquidity_state_min,
+    case
+      when token_decrease > 0
+      and token_increases > 0
+      and current_liquidity_state_min = '_out_of_range_'
+      and current_liquidity_state_max = '_in_range_'
+      and min_liquidity_adjusted > 0
+      and max_liquidity_adjusted > 0 then 'Updated_range'
+      when current_liquidity_state_min = '_out_of_range_'
+      and current_liquidity_state_max = '_in_range_'
+      and min_liquidity_adjusted > 0
+      and max_liquidity_adjusted > 0 then 'Floated_into_range'
+      when current_liquidity_state_min = '_out_of_range_'
+      and current_liquidity_state_max = '_out_of_range_'
+      and min_liquidity_adjusted > 0
+      and max_liquidity_adjusted > 0 then 'Still_out_of_range'
+      when current_liquidity_state_min = '_out_of_range_'
+      and current_liquidity_state_max = '_out_of_range_'
+      and min_liquidity_adjusted > 0
+      and token_decrease > 0 then 'Reduced_exposure'
+      else 'Other'
+    end as change_that_day,
+    sum(min_liquidity_adjusted) as min_liquidity_adjusted,
+    sum(max_liquidity_adjusted) as max_liquidity_adjusted,
+    avg(min_price_1_0) as min_price_1_0,
+    avg(max_price_1_0) as max_price_1_0
+  from response
+  group by 1,
+    2,
+    3,
+    4,
+    5
+),
+per_pool as (
+  select a.blk_date,
+    a.pool_name,
+    a.change_that_day,
+    a.num_active_lps / b.num_active_lps as pct_num_active_lps,
+    a.min_liquidity_adjusted / b.min_liquidity_adjusted as pct_min_liquidity_adjusted,
+    a.max_liquidity_adjusted / b.max_liquidity_adjusted as pct_max_liquidity_adjusted,
+    a.min_price_1_0 as st_price_1_0,
+    a.max_price_1_0 as end_price_1_0
+  from (
+      select mv.blk_date,
+        mv.pool_name,
+        mv.change_that_day,
+        count(DISTINCT mv.liquidity_provider) as num_active_lps,
+        sum(mv.min_liquidity_adjusted) as min_liquidity_adjusted,
+        sum(mv.max_liquidity_adjusted) as max_liquidity_adjusted,
+        avg(mv.min_price_1_0) as min_price_1_0,
+        avg(mv.max_price_1_0) as max_price_1_0
+      from movement as mv
+      where current_liquidity_state_min = '_out_of_range_'
+      group by 1,
+        2,
+        3
+    ) a
+    left join (
+      select mv.blk_date,
+        mv.pool_name,
+        count(DISTINCT mv.liquidity_provider) as num_active_lps,
+        sum(mv.min_liquidity_adjusted) as min_liquidity_adjusted,
+        sum(mv.max_liquidity_adjusted) as max_liquidity_adjusted
+      from movement as mv
+      where current_liquidity_state_min = '_out_of_range_'
+      group by 1,
+        2
+    ) b on a.blk_date = b.blk_date
+    and a.pool_name = b.pool_name
+  where b.num_active_lps > 0
+    and b.min_liquidity_adjusted > 0
+),
+main as(
+  select a.blk_date,
+  a.pool_name,
+  a.change_that_day,
+  a.pct_num_active_lps_avg / total_pct_num_active_lps_avg as pct_num_active_lps_avg,
+  a.pct_min_liquidity_adjusted_avg / total_pct_min_liquidity_adjusted_avg as pct_min_liquidity_adjusted_avg
+from (
+    select blk_date,
+      pool_name,
+      change_that_day,
+      avg(pct_num_active_lps) as pct_num_active_lps_avg,
+      avg(pct_min_liquidity_adjusted) as pct_min_liquidity_adjusted_avg
+    from per_pool
+    group by 1,
+      2,3
+  ) a
+  left join (
+    select blk_date,
+      pool_name,
+      sum(pct_num_active_lps_avg) as total_pct_num_active_lps_avg,
+      sum(pct_min_liquidity_adjusted_avg) as total_pct_min_liquidity_adjusted_avg
+    from (
+        select blk_date,
+        pool_name,
+          change_that_day,
+          avg(pct_num_active_lps) as pct_num_active_lps_avg,
+          avg(pct_min_liquidity_adjusted) as pct_min_liquidity_adjusted_avg
+        from per_pool
+        group by 1,
+          2,3
+      )
+    group by 1,2
+  ) b on a.blk_date = b.blk_date and a.pool_name = b.pool_name
+)
+select * from main
+where pool_name in (select pool_name from top10_pools)
+-- limit 1000
+-- select * from per_pool
+-- limit 100
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading14">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#collapse14"
+          aria-expanded="false"
+          aria-controls="collapse14"
+        >
+        Pools LP price range efficiency
+      </button>
+      </h2>
+      <div
+        id="collapse14"
+        class="accordion-collapse collapse"
+        aria-labelledby="heading14"
+        data-mdb-parent="#accordionExample"
+      >
+        <div class="accordion-body">
+          <pre><code class="language-sql">
+WITH top5_pools as(
+  SELECT 
+    st.block_timestamp as date,
+  st.pool_name,
+  (st.token0_balance_usd + st.token1_balance_usd) as total_bal,
+  st.pool_address
+  FROM uniswapv3.pool_stats st
+    
+  INNER JOIN (
+    SELECT MAX(p1.block_timestamp) as maxDate, p1.pool_address
+    FROM uniswapv3.pool_stats p1
+    GROUP BY p1.pool_address
+  ) p2 ON st.pool_address = p2.pool_address AND st.block_timestamp= p2.maxDate
+  
+  WHERE total_bal IS NOT NULL
+    and st.pool_address != '0xcdb4e35b235845ae8d0c27f77cd8176ddfc26965'
+  
+  ORDER BY total_bal DESC 
+  
+  LIMIT 10
+), 
+all_lp AS (
+SELECT 
+    liquidity_provider,
+    pool_address,
+  pool_name,
+    COUNT(block_id) as n_tx
+FROM 
+  uniswapv3.positions
+WHERE
+  pool_address in (select pool_address from top5_pools)--= '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8' -- USDC-WETH v3
+GROUP BY
+    liquidity_provider,pool_address,pool_name
+ORDER BY
+  n_tx DESC
+),
+lp_rank as(
+  select liquidity_provider,pool_address,pool_name,n_tx,
+    rank() over ( partition by pool_address order by n_tx DESC) as rank
+  from all_lp
+), 
+top10_lp AS (
+select * from lp_rank
+where rank <=10
+),
+  
+lp_with_active_positions AS (
+  --find active pools that already exist before 30 days ago
+SELECT
+    liquidity_provider,
+    pool_address,
+    COUNT(DISTINCT nf_token_id) as n_active_positions
+FROM
+  uniswapv3.positions
+WHERE
+  liquidity_provider IN (SELECT liquidity_provider FROM top10_lp) AND
+  is_active = TRUE AND
+    block_timestamp < CURRENT_DATE --- 30 
+  AND
+  pool_address in (select pool_address from top5_pools)--= '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8'
+GROUP BY
+  liquidity_provider,pool_address
+),
+
+lp_with_active_positions_current AS (
+SELECT
+    liquidity_provider,
+    pool_address,
+    COUNT(DISTINCT nf_token_id) as n_active_positions
+FROM
+  uniswapv3.positions
+WHERE
+  liquidity_provider IN (SELECT liquidity_provider FROM top10_lp) AND
+  is_active = TRUE AND
+  pool_address in (select pool_address from top5_pools)--= '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8'
+GROUP BY
+  liquidity_provider,pool_address
+),
+
+weth_price AS (
+SELECT 
+    TRUNC(block_timestamp, 'day') AS date,
+    pool_address,
+    AVG(price_0_1) AS avg_price,
+    MAX(price_0_1) AS max_price,
+    MIN(price_0_1) AS min_price
+FROM uniswapv3.pool_stats --ethereum.token_prices_hourly
+WHERE 
+    pool_address in (select pool_address from top5_pools)--= '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8'
+  -- symbol = 'WETH' --AND
+  -- hour >= CURRENT_DATE --- 30
+GROUP BY
+  date,pool_address
+),
+
+avg_prices AS (
+  
+SELECT
+    TRUNC(block_timestamp, 'day') AS date,
+    pool_address,
+    pool_name,
+    token0_symbol,
+    token1_symbol,
+    AVG(tick_upper) AS avg_tick_upper,
+    AVG(tick_lower) AS avg_tick_lower,
+    AVG(price_lower_0_1) AS avg_eth_lower_usd,
+    AVG(price_upper_0_1) AS avg_eth_higher_usd
+FROM
+  uniswapv3.positions p
+WHERE
+  liquidity_provider IN (SELECT liquidity_provider FROM lp_with_active_positions_current) AND
+  pool_address in (select pool_address from top5_pools)
+GROUP BY
+  date,pool_address,
+    pool_name,
+    token0_symbol,
+    token1_symbol
+),
+main as(
+  SELECT
+  a.date,
+    a.pool_address,
+    a.pool_name,
+    token0_symbol,
+    token1_symbol,
+    -- a.avg_tick_upper,
+    -- a.avg_tick_lower,
+  a.avg_eth_lower_usd,
+  a.avg_eth_higher_usd,
+  -- p.avg_price AS avg_eth_price,
+  p.max_price AS max_eth_price,
+  p.min_price AS min_eth_price
+FROM
+  avg_prices a
+JOIN
+  weth_price p
+ON
+  p.date = a.date and
+    p.pool_address =a.pool_address
+GROUP BY
+  a.date,
+    a.avg_tick_upper,
+    a.avg_tick_lower,
+  a.avg_eth_lower_usd,
+  a.avg_eth_higher_usd,
+  max_eth_price,
+  min_eth_price,
+    a.pool_address,
+    a.pool_name,
+    token0_symbol,
+    token1_symbol
+)
+
+select date,pool_address,pool_name,
+  case when avg_eth_lower_usd<0.8 then token1_symbol else token0_symbol end as token0_symbol,
+  case when avg_eth_lower_usd<0.8 then token0_symbol else token1_symbol end as token1_symbol,
+  case when avg_eth_lower_usd<0.8 then 1/avg_eth_lower_usd else avg_eth_lower_usd end as avg_eth_lower_usd ,
+  case when avg_eth_lower_usd<0.8 then 1/avg_eth_higher_usd else avg_eth_higher_usd end as avg_eth_higher_usd,
+  case when avg_eth_lower_usd<0.8 then 1/max_eth_price else max_eth_price end as max_eth_price,
+  case when avg_eth_lower_usd<0.8 then 1/min_eth_price else min_eth_price end as min_eth_price
+from main
+  
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading15">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#collapse15"
+          aria-expanded="false"
+          aria-controls="collapse15"
+        >
+          Pools Swap Stats
+        </button>
+      </h2>
+      <div
+        id="collapse15"
+        class="accordion-collapse collapse"
+        aria-labelledby="heading15"
+        data-mdb-parent="#accordionExample"
+      >
+        <div class="accordion-body">
+          <pre><code class="language-sql">
+with
+top10_pools as(
+  SELECT 
+    st.block_timestamp as date,
+  st.pool_name,
+  st.token0_symbol,
+  st.token1_symbol,
+  st.token0_address,
+  st.token1_address,
+  st.pool_address,
+  (st.token0_balance_usd + st.token1_balance_usd) as total_bal
+  FROM uniswapv3.pool_stats st
+    
+  INNER JOIN (
+    SELECT MAX(p1.block_timestamp) as maxDate, p1.pool_address
+    FROM uniswapv3.pool_stats p1
+    GROUP BY p1.pool_address
+  ) p2 ON st.pool_address = p2.pool_address AND st.block_timestamp= (p2.maxDate)
+  
+  WHERE total_bal IS NOT NULL
+    and st.pool_address != '0xcdb4e35b235845ae8d0c27f77cd8176ddfc26965'
+  
+  ORDER BY total_bal DESC 
+  
+  LIMIT 10
+) ,
+swaps as(
+  select 
+    tx_id,
+    pool_address,
+    pool_name,
+    token0_symbol,
+    token1_symbol,
+    amount0_adjusted,
+    amount1_adjusted,
+    (abs(amount0_usd)+abs(amount0_usd))/2 as swap_vol
+  from uniswapv3.swaps
+where pool_address in (select pool_address from top10_pools)
+)
+
+
+select 
+  pool_address,
+  pool_name,
+  token0_symbol,
+  token1_symbol,
+  count(tx_id) as no_swaps,
+  sum(abs(amount0_adjusted)) as token0_traded,
+  sum(abs(amount1_adjusted)) as token1_traded,
+  sum(swap_vol) as total_swap_vol
+from swaps
+  group by 1,2,3,4
+limit 100
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  
+  
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading16">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#collapse16"
+          aria-expanded="false"
+          aria-controls="collapse16"
+        >
+          Pool slippage stats
+        </button>
+      </h2>
+      <div
+        id="collapse16"
+        class="accordion-collapse collapse"
+        aria-labelledby="heading16"
+        data-mdb-parent="#accordionExample"
+      >
+        <div class="accordion-body">
+          <pre><code class="language-sql">
+WITH top5_pools as(
+  SELECT 
+    st.block_timestamp as date,
+  st.pool_name,
+  (st.token0_balance_usd + st.token1_balance_usd) as total_bal,
+  st.pool_address,
+  rank() over(order by (st.token0_balance_usd + st.token1_balance_usd) desc ) as rank 
+  FROM uniswapv3.pool_stats st
+    
+  INNER JOIN (
+    SELECT MAX(p1.block_timestamp) as maxDate, p1.pool_address
+    FROM uniswapv3.pool_stats p1
+    GROUP BY p1.pool_address
+  ) p2 ON st.pool_address = p2.pool_address AND st.block_timestamp= p2.maxDate
+  
+  WHERE total_bal IS NOT NULL
+    and st.pool_address != '0xcdb4e35b235845ae8d0c27f77cd8176ddfc26965'
+  
+  ORDER BY total_bal DESC 
+  
+  LIMIT 10
+),
+swaps as(
+  select 
+    -- block_timestamp,
+    -- tx_id,
+    -- recipient as user,
+    -- pool_name,
+    pool_address,
+    case when amount0_adjusted > 0 then abs(amount0_adjusted) else abs(amount1_adjusted) end as swap_in_amt,
+    case when amount0_adjusted > 0 then abs(amount1_adjusted) else abs(amount0_adjusted) end as swap_out_amt,
+  
+    case when amount0_usd > 0 then abs(amount0_usd) else abs(amount1_usd) end as swap_in_usd,
+    case when amount0_usd > 0 then abs(amount1_usd) else abs(amount0_usd) end as swap_out_usd,
+
+    -- case when amount0_adjusted > 0 then token0_address else token1_address end as token_in,
+    -- case when amount0_adjusted > 0 then token1_address else token0_address end as token_out,
+    case when amount0_adjusted > 0 then token0_symbol else token1_symbol end as token_in_symbol,
+    case when amount0_adjusted > 0 then token1_symbol else token0_symbol end as token_out_symbol,
+
+    case when amount0_adjusted > 0 --amount 0 is swapped in
+      then (amount0_usd-abs(amount1_usd))/(amount0_usd) 
+      else (amount1_usd-abs(amount0_usd))/(amount1_usd) end as slippage,
+    
+    rank() over(partition by pool_address order by block_timestamp desc) as rank
+  from uniswapv3.swaps
+  where 
+    pool_address in ( select pool_address from top5_pools)
+    -- and (rank() over(partition by pool_address order by block_timestamp desc)) <= 10000
+)
+
+-- select * from top5_pools
+  
+-- select pool_name,count(tx_id) from swaps group by pool_name
+-- limit 100
+
+select * from swaps
+where rank <= 6969
+order by rank DESC
+-- limit 500
           </code></pre>
         </div>
       </div>

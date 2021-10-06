@@ -366,7 +366,7 @@ def get_fee_stuff(pool_address, start_date=dt.strptime("2021-05-05", "%Y-%m-%d")
     fee = int(param_dict['pool_name'].split()[1])/(10000*100)
 
     cur_pool_df['FEE']=cur_pool_df['SWAP_VOL']*fee
-    cur_pool_df['FEE_APR'] = cur_pool_df['FEE']/cur_pool_df['TVL_USD']
+    cur_pool_df['FEE_APR'] = cur_pool_df['FEE']*365/cur_pool_df['TVL_USD']
     cur_pool_df['FEE_APR_STR'] = cur_pool_df['FEE_APR'].apply(format_apr_percent)
     cur_pool_df['FEE_STR'] = cur_pool_df['FEE'].apply(format_money)
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>{{param_dict.pool_name}}</title>
+<title>{{param_dict.pool_name_proper}} - {{param_dict.pool_fee}}</title>
 <style>
     .bk-tooltip {
         border: 0px !important;
@@ -44,9 +44,8 @@
     type='text/javascript'></script>
 
 <div class="row text-center align-items-end px-5">
-    <div class="col"></div>
-    <div class="col-3">Pick your date (Cards marked with * don't update) -> </div>
-    <div class="col-3">
+    <div class="col">Pick your date (Cards marked with * don't update) -> </div>
+    <div class="col">
         <div class="form-outline text-center">
             <form action="/uni_pool/{{pool_address}}" method="POST">
                 <div class="input-group input-daterange">
@@ -66,77 +65,83 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-3">
+                <div class="col">
                     <h1 class="display-5">
-                        {{param_dict.pool_name}}
+                        {{param_dict.pool_name_proper}} - {{param_dict.pool_fee}}
                     </h1>
+                    {{param_dict.pool_name}} <br>
                     {{pool_address}}
                 </div>
                 <div class="col-2 d-flex align-items-center justify-content-center">
                     <img src="{{url_for('static',filename=param_dict.token0_icon)}}" width="100">
                     <img src="{{url_for('static',filename=param_dict.token1_icon)}}" width="100">
                 </div>
-                <div id="24hr_stats" class="col ">
-                    <div class="row d-flex align-items-center justify-content-center">
-                        <div class="col">
-                            <div class="card text-center">
-                                <div class="card-header">
-                                    Total Value Locked
-                                </div>
-                                <div class="card-body">
-                                    <h4>
-                                        {{param_list[10].div|safe}}
-                                    </h4>
-                                </div>
-                            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-5">
+    <div class="row">
+        <div id="24hr_stats" class="col ">
+            <div class="row d-flex align-items-center justify-content-center">
+                <div class="col">
+                    <div class="card text-center h-100">
+                        <div class="card-header">
+                            Total Value Locked
                         </div>
-                        <div class="col">
-                            <div class="card text-center">
-                                <div class="card-header">
-                                    Swap Volume (24Hr)
-                                </div>
-                                <div class="card-body">
-                                    <h4>
-                                        {{param_list[5].div|safe}}
-                                    </h4>
-                                </div>
-                            </div>
+                        <div class="card-body">
+                            <h4>
+                                {{param_list[10].div|safe}}
+                            </h4>
                         </div>
-                        <div class="col">
-                            <div class="card text-center">
-                                <div class="card-header">
-                                    Swaps made (24Hr)
-                                </div>
-                                <div class="card-body">
-                                    <h4>
-                                        {{param_list[4].div|safe}}
-                                    </h4>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center h-100">
+                        <div class="card-header">
+                            Swap Volume (24Hr)
                         </div>
-                        <div class="col">
-                            <div class="card text-center">
-                                <div class="card-header">
-                                    Overal Swap Vol *
-                                </div>
-                                <div class="card-body">
-                                    <h4>
-                                        {{overall_swap_dict.total_vol|safe}}
-                                    </h4>
-                                </div>
-                            </div>
+                        <div class="card-body">
+                            <h4>
+                                {{param_list[5].div|safe}}
+                            </h4>
                         </div>
-                        <div class="col">
-                            <div class="card text-center">
-                                <div class="card-header">
-                                    Overall swap count *
-                                </div>
-                                <div class="card-body">
-                                    <h4>
-                                        {{overall_swap_dict.swaps|safe}}
-                                    </h4>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center h-100">
+                        <div class="card-header">
+                            Swaps made (24Hr)
+                        </div>
+                        <div class="card-body">
+                            <h4>
+                                {{param_list[4].div|safe}}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center h-100">
+                        <div class="card-header">
+                            Overal Swap Vol *
+                        </div>
+                        <div class="card-body">
+                            <h4>
+                                {{overall_swap_dict.total_vol|safe}}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center h-100">
+                        <div class="card-header">
+                            Overall swap count *
+                        </div>
+                        <div class="card-body">
+                            <h4>
+                                {{overall_swap_dict.swaps|safe}}
+                            </h4>
                         </div>
                     </div>
                 </div>
@@ -513,22 +518,23 @@
 <div class="p-5">
     <div class="row">
         <div class="col-8">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header">
                     Slippage of past 7000 swaps *
                 </div>
-                <div class="card-body">
-                    {{slip_dict.div|safe}}
-
+                <div class="card-body ">
+                    <div class="align-items-center">
+                        {{slip_dict.div|safe}}
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="row">
                 <div class="col">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
-                            75% of swaps under *
+                            75% swaps under *
                         </div>
                         <div class="card-body">
                             <strong>{{slip_dict.all75|safe}}</strong> slippage
@@ -536,7 +542,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
                             Mean slippage *
                         </div>

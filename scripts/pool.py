@@ -80,6 +80,8 @@ def get_page_stuff(pool_address):
     pool_df = json.loads(result)[0]
     
     param_dict={
+        "pool_name_proper":pool_df['POOL_NAME'].split()[0],
+        "pool_fee":str(int(pool_df['POOL_NAME'].split()[1])/(10000))+" %",
         "pool_name":pool_df['POOL_NAME'],
         "token0":pool_df['TOKEN0_SYMBOL'],
         "token1":pool_df['TOKEN1_SYMBOL'],

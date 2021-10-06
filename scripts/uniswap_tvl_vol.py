@@ -91,7 +91,6 @@ def get_uni_tvl_plot():
     hover = HoverTool(tooltips = tooltips ,formatters={'@BLOCK_HOUR': 'datetime'},callback=callback, mode='vline',renderers=[line])
 
     hover.show_arrow = False
-    p.outline_line_color = None
     p.yaxis.visible = False
     p.grid.visible = False
     p.add_tools(hover,crosshair)

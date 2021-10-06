@@ -56,6 +56,7 @@ def make_uni_lp_plot():
     p.xaxis.visible=False
     p.xaxis.formatter = DatetimeTickFormatter(days="%b %d",months="%b %y")
 
+    p.outline_line_color = None
     p.yaxis.minor_tick_line_color = None
     p.yaxis.major_tick_line_color = None
     p.xaxis.minor_tick_line_color = None

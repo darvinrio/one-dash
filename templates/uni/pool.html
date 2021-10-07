@@ -427,6 +427,11 @@
                 <div class="card-body">
                     {{fee_dict.fee_div|safe}}
                 </div>
+                <div class="card-footer text-center">
+                    <small>
+                        Calculated as <var>fee_percent*trade_volume</var> 
+                    </small>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -436,6 +441,9 @@
                 </div>
                 <div class="card-body">
                     {{fee_dict.apr_div|safe}}
+                </div>
+                <div class="card-footer text-center">
+                    <small>(doesn't factor in liquidity concentration, so your returns are actually greater than this)</small>
                 </div>
             </div>
         </div>

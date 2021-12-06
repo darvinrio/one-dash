@@ -25,7 +25,8 @@ uni_nice_fee_api='https://api.flipsidecrypto.com/api/v2/queries/5f387a95-b848-43
 fee_color_dict={
     "0.05%":'#256fc0',
     "0.3%":'#fc077d',
-    "1.0%":'#4bdb4b'
+    "1.0%":'#4bdb4b',
+    "0.01%":'black'
     
 }
 
